@@ -1,0 +1,33 @@
+name: Fetch Dota 2 Leaderboard
+
+on:
+  schedule:
+    # Run at minute 15 of every hour
+    - cron: "15 * * * *"
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  fetch-leaderboard:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Europe leaderboard data
+        run: curl -s "https://www.dota2.com/webapi/ILeaderboard/GetDivisionLeaderboard/v0001?division=europe&leaderboard=0" | jq '.leaderboard' > leaderboard/europe.json
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add leaderboard/europe.json
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "update Europe leaderboard data - $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
