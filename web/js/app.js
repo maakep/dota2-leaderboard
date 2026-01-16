@@ -280,21 +280,13 @@ const App = {
     const toggle = document.getElementById("expand-toggle");
     const app = document.querySelector(".app");
 
-    // Load saved preference
-    const isCompact = localStorage.getItem("compactMode") === "true";
-    if (isCompact) {
-      app.classList.add("compact");
-      toggle.textContent = "↙";
-      toggle.title = "Show header and stats";
-    }
-
+    // Always start in expanded mode (showing header and stats)
     toggle.addEventListener("click", () => {
       const isNowCompact = app.classList.toggle("compact");
       toggle.textContent = isNowCompact ? "↙" : "↗";
       toggle.title = isNowCompact
         ? "Show header and stats"
         : "Toggle compact mode";
-      localStorage.setItem("compactMode", isNowCompact);
     });
   },
 
