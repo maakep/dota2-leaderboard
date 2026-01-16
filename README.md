@@ -1,4 +1,4 @@
-# 🎮 Dota 2 Leaderboard Stock Exchange
+# 🎮 Dota 2 Leaderboard
 
 > _"MMR is just a number"_ — Copium addicts everywhere
 
