@@ -136,11 +136,12 @@ const PlayerModal = {
     // Format timestamps for labels
     const labels = stats.timestamps.map((ts) => {
       const date = new Date(ts);
-      return date.toLocaleDateString("en-US", {
+      return date.toLocaleDateString("en-GB", {
         month: "short",
         day: "numeric",
         hour: "2-digit",
         minute: "2-digit",
+        hour12: false,
       });
     });
 
