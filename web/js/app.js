@@ -93,6 +93,18 @@ const App = {
     // Initialize leaderboard
     Leaderboard.init();
 
+    // Set up filter change callback to re-render winners/losers
+    Leaderboard.onFilterChange = () => {
+      const winnersScope = parseInt(
+        document.getElementById("winners-scope").value
+      );
+      const losersScope = parseInt(
+        document.getElementById("losers-scope").value
+      );
+      const timeScope = parseInt(document.getElementById("time-scope").value);
+      this.renderStats(winnersScope, losersScope, timeScope);
+    };
+
     // Initialize timeline with callback
     Timeline.init(this.data.snapshots, (snapshot, previousSnapshot) => {
       Leaderboard.render(snapshot, previousSnapshot, true);
@@ -106,20 +118,33 @@ const App = {
    * Render statistics cards
    */
   renderStats(winnersScope = 500, losersScope = 500, timeDays = 0) {
-    const winners = Stats.getWinners(
+    // Check if we should filter to pros only
+    const prosOnly = Leaderboard.teamsOnly;
+
+    let winners = Stats.getWinners(
       this.playerHistory,
-      5,
+      prosOnly ? 50 : 5, // Fetch more if filtering
       winnersScope,
       timeDays,
       this.data.snapshots
     );
-    const losers = Stats.getLosers(
+    let losers = Stats.getLosers(
       this.playerHistory,
-      5,
+      prosOnly ? 50 : 5, // Fetch more if filtering
       losersScope,
       timeDays,
       this.data.snapshots
     );
+
+    // Filter to pros only if enabled
+    if (prosOnly) {
+      winners = winners
+        .filter((p) => p.team_tag && p.team_tag.trim() !== "")
+        .slice(0, 5);
+      losers = losers
+        .filter((p) => p.team_tag && p.team_tag.trim() !== "")
+        .slice(0, 5);
+    }
 
     // Render winners
     const winnersList = document.getElementById("winners-list");
