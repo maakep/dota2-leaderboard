@@ -25,7 +25,7 @@ You're welcome.
 Scrub through leaderboard history like you're reviewing your pos 1's questionable item choices. Watch players **slide up and down** with smooth animations as their ranks change.
 
 - ⏯️ Play/Pause with adjustable speed (1x, 2x, 5x)
-- ⌨️ Arrow keys to navigate (← →)
+- ⌨️ Arrow keys and spacebar to navigate (← →)
 - 🎚️ Drag the slider to any point in history
 
 ### 📈 Biggest Winners & Losers
