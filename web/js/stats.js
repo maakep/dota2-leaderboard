@@ -20,12 +20,10 @@ const Stats = {
 
   /**
    * Generate a unique player ID
+   * Uses name|country only (not team) so team changes don't split history
    */
   getPlayerId(player) {
-    return (
-      player.id ||
-      `${player.name}|${player.team_id || ""}|${player.country || ""}`
-    );
+    return player.id || `${player.name}|${player.country || ""}`;
   },
 
   /**

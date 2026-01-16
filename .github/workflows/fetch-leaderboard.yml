@@ -33,10 +33,10 @@ jobs:
         run: |
           git config --local user.email "schon.fredrik@gmail.com"
           git config --local user.name "maakep-bot"
-          git add leaderboard/europe.json
+          git add leaderboard/*.json
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "update Europe leaderboard data - $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git commit -m "update leaderboard data - $(date -u +'%Y-%m-%d %H:%M UTC')"
             git push
           fi

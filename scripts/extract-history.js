@@ -95,8 +95,9 @@ function getLeaderboardAtCommit(commitHash) {
     }
 
     // Only keep necessary fields to reduce file size
+    // ID uses name|country only (not team) so team changes don't split history
     return players.map((p) => ({
-      id: `${p.name}|${p.team_id || ""}|${p.country || ""}`,
+      id: `${p.name}|${p.country || ""}`,
       rank: p.rank,
       name: p.name,
       team_tag: p.team_tag || null,
