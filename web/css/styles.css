@@ -766,3 +766,24 @@ body {
     display: none;
   }
 }
+
+/* Mobile landscape - ensure scrolling works */
+@media (max-height: 500px) and (orientation: landscape) {
+  body {
+    overflow: auto;
+  }
+
+  .app {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .main-content {
+    overflow: visible;
+  }
+
+  .leaderboard-section {
+    flex: none;
+    max-height: none;
+  }
+}
