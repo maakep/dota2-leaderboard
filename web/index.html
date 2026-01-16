@@ -31,17 +31,31 @@
     <main id="main-content" class="main-content hidden">
       <!-- Stats Cards -->
       <section class="stats-section">
-        <div class="stats-card winners">
-          <h2>📈 Biggest Winners</h2>
+        <div class="stats-card winners" id="winners-card">
+          <h2>
+            <span>📈 Biggest Winners</span>
+            <select id="winners-scope" class="scope-select">
+              <option value="500">All</option>
+              <option value="200">Top 200</option>
+              <option value="100">Top 100</option>
+              <option value="50">Top 50</option>
+              <option value="10">Top 10</option>
+            </select>
+          </h2>
           <ul id="winners-list" class="stats-list"></ul>
         </div>
-        <div class="stats-card losers">
-          <h2>📉 Biggest Losers</h2>
+        <div class="stats-card losers" id="losers-card">
+          <h2>
+            <span>📉 Biggest Losers</span>
+            <select id="losers-scope" class="scope-select">
+              <option value="500">All</option>
+              <option value="200">Top 200</option>
+              <option value="100">Top 100</option>
+              <option value="50">Top 50</option>
+              <option value="10">Top 10</option>
+            </select>
+          </h2>
           <ul id="losers-list" class="stats-list"></ul>
-        </div>
-        <div class="stats-card info">
-          <h2>📊 Stats</h2>
-          <div id="general-stats" class="general-stats"></div>
         </div>
       </section>
 
@@ -55,8 +69,9 @@
         <div class="leaderboard-header">
           <span class="col-rank">Rank</span>
           <span class="col-change">Δ</span>
-          <span class="col-name">Player</span>
           <span class="col-team">Team</span>
+          <span class="col-name">Player</span>
+          <span class="col-arrow"></span>
         </div>
         <div id="leaderboard" class="leaderboard"></div>
       </section>

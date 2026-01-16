@@ -40,8 +40,11 @@ const Stats = {
 
   /**
    * Calculate biggest winners (rank improvements)
+   * @param {Object} playerHistory - Player history data
+   * @param {number} count - Number of results to return
+   * @param {number} scope - Only include players whose current rank is within this scope
    */
-  getWinners(playerHistory, count = 5) {
+  getWinners(playerHistory, count = 5, scope = 500) {
     const changes = [];
 
     for (const [name, data] of Object.entries(playerHistory)) {
@@ -49,6 +52,10 @@ const Stats = {
 
       const firstRank = data.ranks[0].rank;
       const lastRank = data.ranks[data.ranks.length - 1].rank;
+
+      // Filter by scope - only include players currently in the scope
+      if (lastRank > scope) continue;
+
       const change = firstRank - lastRank; // Positive = improved (lower rank is better)
 
       if (change > 0) {
@@ -67,8 +74,11 @@ const Stats = {
 
   /**
    * Calculate biggest losers (rank drops)
+   * @param {Object} playerHistory - Player history data
+   * @param {number} count - Number of results to return
+   * @param {number} scope - Only include players whose current rank is within this scope
    */
-  getLosers(playerHistory, count = 5) {
+  getLosers(playerHistory, count = 5, scope = 500) {
     const changes = [];
 
     for (const [name, data] of Object.entries(playerHistory)) {
@@ -76,6 +86,10 @@ const Stats = {
 
       const firstRank = data.ranks[0].rank;
       const lastRank = data.ranks[data.ranks.length - 1].rank;
+
+      // Filter by scope - only include players currently in the scope
+      if (lastRank > scope) continue;
+
       const change = lastRank - firstRank; // Positive = dropped (higher rank is worse)
 
       if (change > 0) {

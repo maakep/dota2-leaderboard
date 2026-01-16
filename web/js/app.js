@@ -21,6 +21,7 @@ const App = {
       // Render initial state
       this.renderStats();
       this.renderInitialLeaderboard();
+      this.setupScopeFilters();
 
       // Hide loading, show content
       document.getElementById("loading").classList.add("hidden");
@@ -47,9 +48,22 @@ const App = {
       throw new Error("No snapshots in data");
     }
 
-    console.log(`Loaded ${this.data.snapshots.length} snapshots`);
+    // Filter out old snapshots that have more than 500 players (old format)
+    this.data.snapshots = this.data.snapshots.filter(
+      (snapshot) => snapshot.players.length <= 500
+    );
+
+    if (this.data.snapshots.length === 0) {
+      throw new Error("No valid snapshots after filtering");
+    }
+
     console.log(
-      `Date range: ${this.data.meta.dateRange.from} to ${this.data.meta.dateRange.to}`
+      `Loaded ${this.data.snapshots.length} snapshots (filtered to 500-player format)`
+    );
+    console.log(
+      `Date range: ${this.data.snapshots[0].timestamp} to ${
+        this.data.snapshots[this.data.snapshots.length - 1].timestamp
+      }`
     );
 
     // Build player history for stats
@@ -75,21 +89,18 @@ const App = {
   /**
    * Render statistics cards
    */
-  renderStats() {
-    const winners = Stats.getWinners(this.playerHistory);
-    const losers = Stats.getLosers(this.playerHistory);
-    const generalStats = Stats.getGeneralStats(
-      this.data.snapshots,
-      this.playerHistory
-    );
+  renderStats(winnersScope = 500, losersScope = 500) {
+    const winners = Stats.getWinners(this.playerHistory, 5, winnersScope);
+    const losers = Stats.getLosers(this.playerHistory, 5, losersScope);
 
     // Render winners
     const winnersList = document.getElementById("winners-list");
     winnersList.innerHTML = winners
       .map(
-        (w) => `
+        (w, i) => `
       <li data-player="${this.escapeAttr(w.name)}">
         <span>
+          <span class="player-rank-num">${i + 1}.</span>
           <span class="player-name">${this.escapeHtml(w.name)}</span>
           ${
             w.team_tag
@@ -109,7 +120,8 @@ const App = {
 
     // Add click handlers for winners
     winnersList.querySelectorAll("li").forEach((li) => {
-      li.addEventListener("click", () => {
+      li.addEventListener("click", (e) => {
+        e.stopPropagation();
         PlayerModal.show(li.dataset.player);
       });
     });
@@ -118,9 +130,10 @@ const App = {
     const losersList = document.getElementById("losers-list");
     losersList.innerHTML = losers
       .map(
-        (l) => `
+        (l, i) => `
       <li data-player="${this.escapeAttr(l.name)}">
         <span>
+          <span class="player-rank-num">${i + 1}.</span>
           <span class="player-name">${this.escapeHtml(l.name)}</span>
           ${
             l.team_tag
@@ -140,33 +153,31 @@ const App = {
 
     // Add click handlers for losers
     losersList.querySelectorAll("li").forEach((li) => {
-      li.addEventListener("click", () => {
+      li.addEventListener("click", (e) => {
+        e.stopPropagation();
         PlayerModal.show(li.dataset.player);
       });
     });
+  },
 
-    // Render general stats
-    const generalStatsEl = document.getElementById("general-stats");
-    generalStatsEl.innerHTML = `
-      <div class="stat-row">
-        <span class="stat-label">Snapshots</span>
-        <span class="stat-value">${generalStats.totalSnapshots}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">New to Top 500</span>
-        <span class="stat-value">${generalStats.newEntries}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Dropped Out</span>
-        <span class="stat-value">${generalStats.droppedOut}</span>
-      </div>
-      <div class="stat-row">
-        <span class="stat-label">Most Volatile</span>
-        <span class="stat-value">${
-          generalStats.mostVolatile[0]?.name || "-"
-        }</span>
-      </div>
-    `;
+  /**
+   * Setup scope filter dropdowns
+   */
+  setupScopeFilters() {
+    const winnersSelect = document.getElementById("winners-scope");
+    const losersSelect = document.getElementById("losers-scope");
+
+    winnersSelect.addEventListener("change", () => {
+      const scope = parseInt(winnersSelect.value);
+      const losersScope = parseInt(losersSelect.value);
+      this.renderStats(scope, losersScope);
+    });
+
+    losersSelect.addEventListener("change", () => {
+      const winnersScope = parseInt(winnersSelect.value);
+      const scope = parseInt(losersSelect.value);
+      this.renderStats(winnersScope, scope);
+    });
   },
 
   /**

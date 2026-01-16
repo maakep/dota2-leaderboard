@@ -158,8 +158,9 @@ const Leaderboard = {
     row.innerHTML = `
       <span class="rank ${rankClass}">${player.rank}</span>
       <span class="change ${change.class}">${change.text}</span>
-      <span class="name">${this.escapeHtml(player.name)}</span>
       <span class="team">${player.team_tag || "-"}</span>
+      <span class="name">${this.escapeHtml(player.name)}</span>
+      <span class="chevron">›</span>
     `;
 
     // Click handler
