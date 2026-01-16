@@ -3,6 +3,8 @@ name: Build and Deploy Web App
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: "20 * * * *"
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
