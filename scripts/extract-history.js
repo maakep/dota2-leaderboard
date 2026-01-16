@@ -84,6 +84,7 @@ function getLeaderboardAtCommit(commitHash) {
     const players = JSON.parse(content);
     // Only keep necessary fields to reduce file size
     return players.map((p) => ({
+      id: `${p.name}|${p.team_id || ""}|${p.country || ""}`,
       rank: p.rank,
       name: p.name,
       team_tag: p.team_tag || null,

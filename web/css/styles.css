@@ -183,8 +183,6 @@ body {
 
 .stats-list .player-team {
   color: var(--text-secondary);
-  font-size: 0.85rem;
-  margin-left: 8px;
 }
 
 .stats-list .rank-change {
@@ -243,7 +241,7 @@ body {
 
 .leaderboard-header {
   display: grid;
-  grid-template-columns: 70px 60px 100px 1fr 40px 40px;
+  grid-template-columns: 70px 60px 100px 1fr 30px 40px 40px;
   padding: 15px 20px;
   background: var(--bg-tertiary);
   font-weight: 600;
@@ -262,7 +260,7 @@ body {
 
 .leaderboard-row {
   display: grid;
-  grid-template-columns: 70px 60px 100px 1fr 40px;
+  grid-template-columns: 70px 60px 100px 1fr 30px 40px;
   padding: 10px 20px;
   border-bottom: 1px solid var(--border-color);
   cursor: pointer;
@@ -311,6 +309,33 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.leaderboard-row .flag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Player flags */
+.player-flag {
+  width: 16px;
+  height: 11px;
+  vertical-align: middle;
+}
+
+.modal-flag {
+  width: 20px;
+  height: 14px;
+  margin-left: 8px;
+}
+
+.modal-team-prefix {
+  color: var(--text-secondary);
+}
+
+.stats-list .player-flag {
+  margin-left: 6px;
 }
 
 .leaderboard-row .team {

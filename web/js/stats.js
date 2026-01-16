@@ -19,8 +19,18 @@ const Stats = {
   },
 
   /**
+   * Generate a unique player ID
+   */
+  getPlayerId(player) {
+    return (
+      player.id ||
+      `${player.name}|${player.team_id || ""}|${player.country || ""}`
+    );
+  },
+
+  /**
    * Build a map of player history across all snapshots
-   * Returns: { playerName: [{ timestamp, rank }, ...] }
+   * Returns: { playerId: [{ timestamp, rank }, ...] }
    * @param {Array} snapshots - Snapshots to process
    * @param {number} timeDays - Number of days to include (0 = all time)
    */
@@ -30,8 +40,10 @@ const Stats = {
 
     for (const snapshot of filteredSnapshots) {
       for (const player of snapshot.players) {
-        if (!history[player.name]) {
-          history[player.name] = {
+        const playerId = this.getPlayerId(player);
+        if (!history[playerId]) {
+          history[playerId] = {
+            id: playerId,
             name: player.name,
             team_tag: player.team_tag,
             team_id: player.team_id,
@@ -40,14 +52,17 @@ const Stats = {
           };
         }
 
-        history[player.name].ranks.push({
+        history[playerId].ranks.push({
           timestamp: snapshot.timestamp,
           rank: player.rank,
         });
 
         // Update team info to latest
         if (player.team_tag) {
-          history[player.name].team_tag = player.team_tag;
+          history[playerId].team_tag = player.team_tag;
+        }
+        if (player.country) {
+          history[playerId].country = player.country;
         }
       }
     }
@@ -77,7 +92,7 @@ const Stats = {
         : playerHistory;
     const changes = [];
 
-    for (const [name, data] of Object.entries(history)) {
+    for (const [id, data] of Object.entries(history)) {
       if (data.ranks.length < 2) continue;
 
       const firstRank = data.ranks[0].rank;
@@ -90,8 +105,10 @@ const Stats = {
 
       if (change > 0) {
         changes.push({
-          name,
+          id,
+          name: data.name,
           team_tag: data.team_tag,
+          country: data.country,
           firstRank,
           lastRank,
           change,
@@ -124,7 +141,7 @@ const Stats = {
         : playerHistory;
     const changes = [];
 
-    for (const [name, data] of Object.entries(history)) {
+    for (const [id, data] of Object.entries(history)) {
       if (data.ranks.length < 2) continue;
 
       const firstRank = data.ranks[0].rank;
@@ -137,8 +154,10 @@ const Stats = {
 
       if (change > 0) {
         changes.push({
-          name,
+          id,
+          name: data.name,
           team_tag: data.team_tag,
+          country: data.country,
           firstRank,
           lastRank,
           change,
@@ -195,10 +214,10 @@ const Stats = {
   },
 
   /**
-   * Get detailed stats for a specific player
+   * Get detailed stats for a specific player by ID
    */
-  getPlayerStats(playerHistory, playerName) {
-    const data = playerHistory[playerName];
+  getPlayerStats(playerHistory, playerId) {
+    const data = playerHistory[playerId];
     if (!data || data.ranks.length === 0) return null;
 
     const ranks = data.ranks.map((r) => r.rank);
@@ -226,7 +245,8 @@ const Stats = {
     }
 
     return {
-      name: playerName,
+      id: playerId,
+      name: data.name,
       team_tag: data.team_tag,
       country: data.country,
       currentRank,
@@ -238,6 +258,14 @@ const Stats = {
       ranks,
       timestamps,
     };
+  },
+
+  /**
+   * Get country flag URL
+   */
+  getFlagUrl(country) {
+    if (!country) return null;
+    return `https://community.fastly.steamstatic.com/public/images/countryflags/${country.toLowerCase()}.gif`;
   },
 };
 

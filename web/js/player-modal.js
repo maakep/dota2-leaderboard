@@ -37,18 +37,37 @@ const PlayerModal = {
   /**
    * Show modal for a specific player
    */
-  show(playerName) {
-    const stats = Stats.getPlayerStats(this.playerHistory, playerName);
+  show(playerId) {
+    const stats = Stats.getPlayerStats(this.playerHistory, playerId);
     if (!stats) {
-      console.error("Player not found:", playerName);
+      console.error("Player not found:", playerId);
       return;
     }
 
-    // Update modal content
-    document.getElementById("modal-player-name").textContent = stats.name;
-    document.getElementById("modal-player-team").textContent = stats.team_tag
-      ? `[${stats.team_tag}]`
+    // Update modal content with team prefix and flag
+    const nameEl = document.getElementById("modal-player-name");
+    const teamEl = document.getElementById("modal-player-team");
+    const flagUrl = Stats.getFlagUrl(stats.country);
+
+    // Build name with team prefix (Team.Name format)
+    const teamPrefix = stats.team_tag
+      ? `<span class="modal-team-prefix">${this.escapeHtml(
+          stats.team_tag
+        )}.</span>`
       : "";
+    const flagHtml = flagUrl
+      ? `<img class="player-flag modal-flag" src="${flagUrl}" alt="${
+          stats.country
+        }" title="${
+          stats.country?.toUpperCase() || ""
+        }" onerror="this.style.display='none'">`
+      : "";
+
+    nameEl.innerHTML = `${teamPrefix}${this.escapeHtml(
+      stats.name
+    )} ${flagHtml}`;
+    teamEl.textContent = ""; // Clear the old team display
+
     document.getElementById(
       "modal-current-rank"
     ).textContent = `#${stats.currentRank}`;
@@ -78,6 +97,15 @@ const PlayerModal = {
     // Show modal
     this.modal.classList.remove("hidden");
     document.body.style.overflow = "hidden";
+  },
+
+  /**
+   * Escape HTML for safe display
+   */
+  escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
   },
 
   /**

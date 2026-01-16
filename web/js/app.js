@@ -126,15 +126,23 @@ const App = {
     winnersList.innerHTML = winners
       .map(
         (w, i) => `
-      <li data-player="${this.escapeAttr(w.name)}">
+      <li data-player-id="${this.escapeAttr(w.id)}">
         <span>
           <span class="player-rank-num">${i + 1}.</span>
-          <span class="player-name">${this.escapeHtml(w.name)}</span>
           ${
             w.team_tag
-              ? `<span class="player-team">[${this.escapeHtml(
+              ? `<span class="player-team">${this.escapeHtml(
                   w.team_tag
-                )}]</span>`
+                )}.</span>`
+              : ""
+          }<span class="player-name">${this.escapeHtml(w.name)}</span>
+          ${
+            w.country
+              ? `<img class="player-flag" src="${Stats.getFlagUrl(
+                  w.country
+                )}" alt="${
+                  w.country
+                }" title="${w.country.toUpperCase()}" onerror="this.style.display='none'">`
               : ""
           }
         </span>
@@ -150,7 +158,7 @@ const App = {
     winnersList.querySelectorAll("li").forEach((li) => {
       li.addEventListener("click", (e) => {
         e.stopPropagation();
-        PlayerModal.show(li.dataset.player);
+        PlayerModal.show(li.dataset.playerId);
       });
     });
 
@@ -159,15 +167,23 @@ const App = {
     losersList.innerHTML = losers
       .map(
         (l, i) => `
-      <li data-player="${this.escapeAttr(l.name)}">
+      <li data-player-id="${this.escapeAttr(l.id)}">
         <span>
           <span class="player-rank-num">${i + 1}.</span>
-          <span class="player-name">${this.escapeHtml(l.name)}</span>
           ${
             l.team_tag
-              ? `<span class="player-team">[${this.escapeHtml(
+              ? `<span class="player-team">${this.escapeHtml(
                   l.team_tag
-                )}]</span>`
+                )}.</span>`
+              : ""
+          }<span class="player-name">${this.escapeHtml(l.name)}</span>
+          ${
+            l.country
+              ? `<img class="player-flag" src="${Stats.getFlagUrl(
+                  l.country
+                )}" alt="${
+                  l.country
+                }" title="${l.country.toUpperCase()}" onerror="this.style.display='none'">`
               : ""
           }
         </span>
@@ -183,7 +199,7 @@ const App = {
     losersList.querySelectorAll("li").forEach((li) => {
       li.addEventListener("click", (e) => {
         e.stopPropagation();
-        PlayerModal.show(li.dataset.player);
+        PlayerModal.show(li.dataset.playerId);
       });
     });
   },

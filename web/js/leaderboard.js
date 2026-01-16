@@ -144,7 +144,8 @@ const Leaderboard = {
   createRow(player, prevRank) {
     const row = document.createElement("div");
     row.className = "leaderboard-row";
-    row.dataset.playerName = player.name;
+    const playerId = Stats.getPlayerId(player);
+    row.dataset.playerId = playerId;
 
     // Rank styling
     let rankClass = "";
@@ -155,18 +156,29 @@ const Leaderboard = {
     // Change indicator
     const change = this.getChangeDisplay(player.rank, prevRank);
 
+    // Flag image
+    const flagUrl = Stats.getFlagUrl(player.country);
+    const flagHtml = flagUrl
+      ? `<img class="player-flag" src="${flagUrl}" alt="${
+          player.country
+        }" title="${
+          player.country?.toUpperCase() || ""
+        }" onerror="this.style.display='none'">`
+      : "";
+
     row.innerHTML = `
       <span class="rank ${rankClass}">${player.rank}</span>
       <span class="change ${change.class}">${change.text}</span>
       <span class="team">${player.team_tag || ""}</span>
       <span class="name">${this.escapeHtml(player.name)}</span>
+      <span class="flag">${flagHtml}</span>
       <span class="chevron">›</span>
     `;
 
     // Click handler
     row.addEventListener("click", () => {
       if (window.PlayerModal) {
-        window.PlayerModal.show(player.name);
+        window.PlayerModal.show(playerId);
       }
     });
 
@@ -195,8 +207,20 @@ const Leaderboard = {
     changeEl.className = `change ${change.class}`;
 
     // Update name and team
+    const flagUrl = Stats.getFlagUrl(player.country);
+    const flagHtml = flagUrl
+      ? `<img class="player-flag" src="${flagUrl}" alt="${
+          player.country
+        }" title="${
+          player.country?.toUpperCase() || ""
+        }" onerror="this.style.display='none'">`
+      : "";
     nameEl.textContent = player.name;
     teamEl.textContent = player.team_tag || "";
+
+    // Update flag
+    const flagEl = row.querySelector(".flag");
+    if (flagEl) flagEl.innerHTML = flagHtml;
   },
 
   /**
