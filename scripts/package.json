@@ -1,0 +1,11 @@
+{
+  "name": "dota-leaderboard-extract",
+  "version": "1.0.0",
+  "description": "Extract leaderboard history from git",
+  "main": "extract-history.js",
+  "scripts": {
+    "extract": "node extract-history.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

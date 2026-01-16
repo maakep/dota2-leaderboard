@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dota 2 Leaderboard Time Machine</title>
+  <meta name="description" content="Track Dota 2 Europe leaderboard changes over time with animated visualizations">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <h1>🏆 Dota 2 Leaderboard Time Machine</h1>
+      <p class="subtitle">Europe Region</p>
+    </header>
+
+    <!-- Loading State -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Loading leaderboard history...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="error" class="error hidden">
+      <p>⚠️ Failed to load data. Please try again later.</p>
+    </div>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content hidden">
+      <!-- Stats Cards -->
+      <section class="stats-section">
+        <div class="stats-card winners">
+          <h2>📈 Biggest Winners</h2>
+          <ul id="winners-list" class="stats-list"></ul>
+        </div>
+        <div class="stats-card losers">
+          <h2>📉 Biggest Losers</h2>
+          <ul id="losers-list" class="stats-list"></ul>
+        </div>
+        <div class="stats-card info">
+          <h2>📊 Stats</h2>
+          <div id="general-stats" class="general-stats"></div>
+        </div>
+      </section>
+
+      <!-- Current Time Display -->
+      <div class="time-display">
+        <span id="current-time">Loading...</span>
+      </div>
+
+      <!-- Leaderboard -->
+      <section class="leaderboard-section">
+        <div class="leaderboard-header">
+          <span class="col-rank">Rank</span>
+          <span class="col-change">Δ</span>
+          <span class="col-name">Player</span>
+          <span class="col-team">Team</span>
+        </div>
+        <div id="leaderboard" class="leaderboard"></div>
+      </section>
+
+      <!-- Timeline -->
+      <section class="timeline-section">
+        <div class="timeline-controls">
+          <button id="play-btn" class="control-btn" title="Play/Pause">▶</button>
+          <div class="speed-controls">
+            <button class="speed-btn" data-speed="1">1x</button>
+            <button class="speed-btn active" data-speed="2">2x</button>
+            <button class="speed-btn" data-speed="5">5x</button>
+          </div>
+        </div>
+        <div class="timeline-slider-container">
+          <input type="range" id="timeline-slider" class="timeline-slider" min="0" max="100" value="100">
+          <div class="timeline-labels">
+            <span id="timeline-start"></span>
+            <span id="timeline-end"></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Player Modal -->
+    <div id="player-modal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" id="modal-close">&times;</button>
+        <div class="modal-header">
+          <h2 id="modal-player-name"></h2>
+          <span id="modal-player-team" class="modal-team"></span>
+        </div>
+        <div class="modal-stats">
+          <div class="modal-stat">
+            <span class="stat-label">Current Rank</span>
+            <span id="modal-current-rank" class="stat-value"></span>
+          </div>
+          <div class="modal-stat">
+            <span class="stat-label">Best Rank</span>
+            <span id="modal-best-rank" class="stat-value"></span>
+          </div>
+          <div class="modal-stat">
+            <span class="stat-label">Worst Rank</span>
+            <span id="modal-worst-rank" class="stat-value"></span>
+          </div>
+          <div class="modal-stat">
+            <span class="stat-label">Total Change</span>
+            <span id="modal-total-change" class="stat-value"></span>
+          </div>
+        </div>
+        <div class="modal-chart-container">
+          <canvas id="player-chart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/stats.js"></script>
+  <script src="js/leaderboard.js"></script>
+  <script src="js/timeline.js"></script>
+  <script src="js/player-modal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
