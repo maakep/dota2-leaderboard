@@ -219,6 +219,110 @@ body {
   font-weight: 600;
 }
 
+/* Team Changes Section */
+.team-changes-section {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 15px 20px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.team-changes-header {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.team-changes-header #team-changes-count {
+  color: var(--text-muted);
+  font-weight: normal;
+}
+
+.team-changes-toggle {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s, transform 0.2s;
+}
+
+.team-changes-toggle:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.team-changes-toggle .chevron {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+.team-changes-section.collapsed .team-changes-toggle .chevron {
+  transform: rotate(-90deg);
+}
+
+.team-changes-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+  overflow: hidden;
+}
+
+.team-changes-section.collapsed .team-changes-list {
+  max-height: 0 !important;
+  opacity: 0;
+  margin-bottom: 0;
+}
+
+.team-change-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bg-tertiary);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.team-change-item:hover {
+  background: var(--bg-primary);
+}
+
+.team-change-item .player-name {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.team-change-item .team-arrow {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.team-change-item .old-team {
+  color: var(--negative);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.team-change-item .new-team {
+  color: var(--positive);
+}
+
+.team-change-item .no-team {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
 /* Main Content */
 .main-content {
   display: flex;
@@ -452,13 +556,15 @@ body {
 
 /* Compact mode - hide header and stats */
 .header,
-.stats-section {
+.stats-section,
+.team-changes-section {
   transition: opacity 0.3s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
   overflow: hidden;
 }
 
 .app.compact .header,
-.app.compact .stats-section {
+.app.compact .stats-section,
+.app.compact .team-changes-section {
   opacity: 0;
   max-height: 0;
   margin: 0;
@@ -472,6 +578,10 @@ body {
 
 .stats-section {
   max-height: 400px;
+}
+
+.team-changes-section {
+  max-height: 2000px; /* Large value to allow many items, will animate to 0 in compact mode */
 }
 
 .app.compact .leaderboard-section {
@@ -732,6 +842,18 @@ body {
 
   .stats-card {
     min-height: 200px;
+  }
+
+  .team-changes-section {
+    max-height: none;
+  }
+
+  .team-changes-list {
+    max-height: none;
+  }
+
+  .team-changes-section.collapsed .team-changes-list {
+    max-height: 0 !important;
   }
 
   .leaderboard-section {

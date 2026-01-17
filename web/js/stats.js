@@ -265,7 +265,64 @@ const Stats = {
     if (!country) return null;
     return `https://community.fastly.steamstatic.com/public/images/countryflags/${country.toLowerCase()}.gif`;
   },
-};
 
+  /**
+   * Detect team changes within a time period
+   * @param {Array} snapshots - All snapshots
+   * @param {number} timeDays - Time period in days
+   * @returns {Array} Array of team change events
+   */
+  getTeamChanges(snapshots, timeDays = 0) {
+    const filteredSnapshots = this.filterSnapshotsByTime(snapshots, timeDays);
+    if (filteredSnapshots.length < 2) return [];
+
+    // Track each player's team over time
+    const playerTeams = {}; // playerId -> { firstTeam, firstTimestamp, lastTeam, lastTimestamp, name, country }
+
+    for (const snapshot of filteredSnapshots) {
+      for (const player of snapshot.players) {
+        const playerId = this.getPlayerId(player);
+        const teamTag = player.team_tag || null;
+
+        if (!playerTeams[playerId]) {
+          playerTeams[playerId] = {
+            name: player.name,
+            country: player.country,
+            firstTeam: teamTag,
+            firstTimestamp: snapshot.timestamp,
+            lastTeam: teamTag,
+            lastTimestamp: snapshot.timestamp,
+          };
+        } else {
+          playerTeams[playerId].lastTeam = teamTag;
+          playerTeams[playerId].lastTimestamp = snapshot.timestamp;
+          // Update name/country to latest
+          playerTeams[playerId].name = player.name;
+          if (player.country) playerTeams[playerId].country = player.country;
+        }
+      }
+    }
+
+    // Find players whose team changed
+    const changes = [];
+    for (const [playerId, data] of Object.entries(playerTeams)) {
+      if (data.firstTeam !== data.lastTeam) {
+        changes.push({
+          id: playerId,
+          name: data.name,
+          country: data.country,
+          fromTeam: data.firstTeam,
+          toTeam: data.lastTeam,
+          timestamp: data.lastTimestamp,
+        });
+      }
+    }
+
+    // Sort by most recent change
+    changes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    return changes;
+  },
+};
 // Export for use in other modules
 window.Stats = Stats;

@@ -38,6 +38,7 @@ const App = {
       this.renderInitialLeaderboard();
       this.setupScopeFilters();
       this.setupExpandToggle();
+      this.setupTeamChangesToggle();
 
       // Hide loading, show content
       document.getElementById("loading").classList.add("hidden");
@@ -224,6 +225,89 @@ const App = {
         e.stopPropagation();
         PlayerModal.show(li.dataset.playerId);
       });
+    });
+
+    // Render team changes
+    this.renderTeamChanges(timeDays);
+  },
+
+  /**
+   * Render team changes section
+   */
+  renderTeamChanges(timeDays) {
+    const changes = Stats.getTeamChanges(this.data.snapshots, timeDays);
+    const section = document.getElementById("team-changes-section");
+    const list = document.getElementById("team-changes-list");
+    const countSpan = document.getElementById("team-changes-count");
+    const toggleBtn = document.getElementById("team-changes-toggle");
+
+    if (changes.length === 0) {
+      section.classList.add("hidden");
+      return;
+    }
+
+    section.classList.remove("hidden");
+
+    // Show count in header
+    countSpan.textContent = `(${changes.length})`;
+
+    // Show/hide toggle button based on count (show if more than 4)
+    const COLLAPSE_THRESHOLD = 4;
+    if (changes.length > COLLAPSE_THRESHOLD) {
+      toggleBtn.classList.remove("hidden");
+    } else {
+      toggleBtn.classList.add("hidden");
+      section.classList.remove("collapsed");
+    }
+
+    list.innerHTML = changes
+      .map((c) => {
+        const flagUrl = Stats.getFlagUrl(c.country);
+        const flagHtml = flagUrl
+          ? `<img class="player-flag" src="${flagUrl}" alt="${
+              c.country
+            }" title="${
+              c.country?.toUpperCase() || ""
+            }" onerror="this.style.display='none'">`
+          : "";
+        const oldTeam = c.fromTeam
+          ? `<span class="old-team">${this.escapeHtml(c.fromTeam)}</span>`
+          : `<span class="no-team">No Team</span>`;
+        const newTeam = c.toTeam
+          ? `<span class="new-team">${this.escapeHtml(c.toTeam)}</span>`
+          : `<span class="no-team">No Team</span>`;
+
+        return `
+          <div class="team-change-item" data-player-id="${this.escapeAttr(
+            c.id
+          )}">
+            ${flagHtml}
+            <span class="player-name">${this.escapeHtml(c.name)}</span>
+            ${oldTeam}
+            <span class="team-arrow">→</span>
+            ${newTeam}
+          </div>
+        `;
+      })
+      .join("");
+
+    // Add click handlers
+    list.querySelectorAll(".team-change-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        PlayerModal.show(item.dataset.playerId);
+      });
+    });
+  },
+
+  /**
+   * Setup team changes toggle
+   */
+  setupTeamChangesToggle() {
+    const section = document.getElementById("team-changes-section");
+    const toggleBtn = document.getElementById("team-changes-toggle");
+
+    toggleBtn.addEventListener("click", () => {
+      section.classList.toggle("collapsed");
     });
   },
 
