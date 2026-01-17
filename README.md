@@ -91,20 +91,23 @@ npx serve web
 
 ```
 ├── leaderboard/
-│   └── europe.json          # Current leaderboard (updated hourly)
+│   ├── americas.json        # Americas leaderboard (updated hourly)
+│   ├── europe.json          # Europe leaderboard (updated hourly)
+│   ├── sea.json             # SE Asia leaderboard (updated hourly)
+│   └── china.json           # China leaderboard (updated hourly)
 ├── scripts/
 │   └── extract-history.js   # Extracts snapshots from git history
 ├── web/
 │   ├── index.html           # The one HTML file to rule them all
 │   ├── css/styles.css       # Dark mode only (we're not animals)
 │   ├── js/
-│   │   ├── app.js           # Main coordinator
+│   │   ├── app.js           # Main coordinator + region switching
 │   │   ├── leaderboard.js   # Table rendering + animations
 │   │   ├── timeline.js      # Playback controls
 │   │   ├── stats.js         # Winners/losers calculations
 │   │   └── player-modal.js  # Player detail popup
 │   └── data/
-│       └── history.json     # Generated timeline data
+│       └── history-*.json   # Generated timeline data per region
 └── .github/workflows/       # The automation magic
 ```
 

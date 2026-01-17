@@ -6,13 +6,28 @@
 const App = {
   data: null,
   playerHistory: null,
+  currentRegion: "europe",
+
+  // Region configuration
+  regions: {
+    americas: { name: "Americas", file: "americas" },
+    europe: { name: "Europe", file: "europe" },
+    sea: { name: "SE Asia", file: "sea" },
+    china: { name: "China", file: "china" },
+  },
 
   /**
    * Initialize the application
    */
   async init() {
     try {
-      // Load data
+      // Determine initial region from URL hash or localStorage
+      this.currentRegion = this.getInitialRegion();
+
+      // Setup region selector
+      this.setupRegionSelector();
+
+      // Load data for current region
       await this.loadData();
 
       // Initialize modules
@@ -43,6 +58,9 @@ const App = {
       // Hide loading, show content
       document.getElementById("loading").classList.add("hidden");
       document.getElementById("main-content").classList.remove("hidden");
+
+      // Listen for hash changes
+      window.addEventListener("hashchange", () => this.handleHashChange());
     } catch (error) {
       console.error("Failed to initialize app:", error);
       document.getElementById("loading").classList.add("hidden");
@@ -51,10 +69,121 @@ const App = {
   },
 
   /**
-   * Load history data from JSON file
+   * Get initial region from URL hash or localStorage
+   */
+  getInitialRegion() {
+    // Check URL hash first
+    const hash = window.location.hash.slice(1).toLowerCase();
+    if (hash && this.regions[hash]) {
+      return hash;
+    }
+
+    // Fall back to localStorage
+    const saved = localStorage.getItem("selectedRegion");
+    if (saved && this.regions[saved]) {
+      return saved;
+    }
+
+    // Default to europe
+    return "europe";
+  },
+
+  /**
+   * Handle URL hash changes
+   */
+  handleHashChange() {
+    const hash = window.location.hash.slice(1).toLowerCase();
+    if (hash && this.regions[hash] && hash !== this.currentRegion) {
+      this.switchRegion(hash);
+    }
+  },
+
+  /**
+   * Setup region selector pills
+   */
+  setupRegionSelector() {
+    const selector = document.getElementById("region-selector");
+    const pills = selector.querySelectorAll(".region-pill");
+
+    // Set initial active state
+    pills.forEach((pill) => {
+      if (pill.dataset.region === this.currentRegion) {
+        pill.classList.add("active");
+      }
+
+      pill.addEventListener("click", () => {
+        const region = pill.dataset.region;
+        if (region !== this.currentRegion) {
+          this.switchRegion(region);
+        }
+      });
+    });
+
+    // Update URL hash to reflect current region
+    window.location.hash = this.currentRegion;
+  },
+
+  /**
+   * Switch to a different region
+   */
+  async switchRegion(region) {
+    if (!this.regions[region]) return;
+
+    this.currentRegion = region;
+    localStorage.setItem("selectedRegion", region);
+    window.location.hash = region;
+
+    // Update pill states
+    document.querySelectorAll(".region-pill").forEach((pill) => {
+      pill.classList.toggle("active", pill.dataset.region === region);
+    });
+
+    // Show loading state
+    document.getElementById("main-content").classList.add("hidden");
+    document.getElementById("loading").classList.remove("hidden");
+
+    try {
+      // Reload data for new region
+      await this.loadData();
+
+      // Rebuild player history
+      this.playerHistory = Stats.buildPlayerHistory(this.data.snapshots);
+
+      // Re-initialize timeline with new data
+      Timeline.init(this.data.snapshots, (snapshot, previousSnapshot) => {
+        Leaderboard.render(snapshot, previousSnapshot, true);
+      });
+
+      // Re-initialize player modal with new history
+      PlayerModal.init(this.playerHistory);
+
+      // Re-render everything
+      const winnersScope = parseInt(
+        document.getElementById("winners-scope").value
+      );
+      const losersScope = parseInt(
+        document.getElementById("losers-scope").value
+      );
+      const timeScope = parseInt(document.getElementById("time-scope").value);
+
+      this.renderStats(winnersScope, losersScope, timeScope);
+      this.renderInitialLeaderboard();
+
+      // Hide loading, show content
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("main-content").classList.remove("hidden");
+    } catch (error) {
+      console.error("Failed to switch region:", error);
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("error").classList.remove("hidden");
+    }
+  },
+
+  /**
+   * Load history data from JSON file for current region
    */
   async loadData() {
-    const response = await fetch("data/history.json");
+    const response = await fetch(`data/history-${this.currentRegion}.json`);
     if (!response.ok) {
       throw new Error(`Failed to load data: ${response.status}`);
     }

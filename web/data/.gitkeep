@@ -1,3 +1,5 @@
 # This directory is for generated data
 
-# history.json will be created by the build process
+# history-{region}.json files will be created by the build process
+
+# (history-americas.json, history-europe.json, history-sea.json, history-china.json)

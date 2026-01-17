@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dota 2 Leaderboard Time Machine</title>
-  <meta name="description" content="Track Dota 2 Europe leaderboard changes over time">
+  <title>Dota 2 Leaderboard Tracker</title>
+  <meta name="description" content="Track Dota 2 leaderboard changes over time across all regions">
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -12,8 +12,13 @@
   <div class="app">
     <!-- Header -->
     <header class="header" id="app-header">
-      <h1>Dota 2 Leaderboard Time Machine</h1>
-      <p class="subtitle">Europe Region</p>
+      <h1>Dota 2 Leaderboard Tracker</h1>
+      <div class="region-selector" id="region-selector">
+        <button class="region-pill" data-region="americas">Americas</button>
+        <button class="region-pill" data-region="europe">Europe</button>
+        <button class="region-pill" data-region="sea">SE Asia</button>
+        <button class="region-pill" data-region="china">China</button>
+      </div>
     </header>
 
     <!-- Loading State -->

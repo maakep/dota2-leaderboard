@@ -62,6 +62,43 @@ body {
   font-size: 0.9rem;
 }
 
+/* Region Selector Pills */
+.region-selector {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.region-pill {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.region-pill:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
+.region-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.region-pill.active:hover {
+  background: #d13a52;
+  border-color: #d13a52;
+}
+
 /* Loading & Error States */
 .loading, .error {
   display: flex;
@@ -833,6 +870,16 @@ body {
 
   .header h1 {
     font-size: 1.3rem;
+  }
+
+  .region-selector {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .region-pill {
+    padding: 5px 12px;
+    font-size: 0.8rem;
   }
 
   .stats-section {

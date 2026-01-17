@@ -9,6 +9,8 @@ on:
 jobs:
   fetch-leaderboard:
     runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.commit.outputs.changes }}
 
     permissions:
       contents: write
@@ -30,13 +32,32 @@ jobs:
         run: curl -s "https://www.dota2.com/webapi/ILeaderboard/GetDivisionLeaderboard/v0001?division=americas&leaderboard=0" | jq '.leaderboard[:500]' > leaderboard/americas.json
 
       - name: Commit and push changes
+        id: commit
         run: |
           git config --local user.email "schon.fredrik@gmail.com"
           git config --local user.name "maakep-bot"
           git add leaderboard/*.json
           if git diff --staged --quiet; then
             echo "No changes to commit"
+            echo "changes=false" >> $GITHUB_OUTPUT
           else
             git commit -m "update leaderboard data - $(date -u +'%Y-%m-%d %H:%M UTC')"
             git push
+            echo "changes=true" >> $GITHUB_OUTPUT
           fi
+
+  trigger-deploy:
+    needs: fetch-leaderboard
+    runs-on: ubuntu-latest
+    if: needs.fetch-leaderboard.outputs.changes == 'true' || github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Trigger Build and Deploy
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'build-web.yml',
+              ref: 'main'
+            })

@@ -17,10 +17,18 @@ const Timeline = {
 
   onSnapshotChange: null, // Callback when snapshot changes
 
+  keydownHandler: null, // Store reference to remove listener on re-init
+  initialized: false,
+
   /**
    * Initialize the timeline
    */
   init(snapshots, onSnapshotChange) {
+    // Stop any existing playback
+    if (this.isPlaying) {
+      this.stopPlay();
+    }
+
     this.snapshots = snapshots;
     this.onSnapshotChange = onSnapshotChange;
     this.currentIndex = snapshots.length - 1; // Start at most recent
@@ -43,34 +51,40 @@ const Timeline = {
       snapshots[snapshots.length - 1].timestamp
     );
 
-    // Event listeners
-    this.slider.addEventListener("input", () => this.onSliderChange());
-    this.playBtn.addEventListener("click", () => this.togglePlay());
+    // Only add event listeners once
+    if (!this.initialized) {
+      // Event listeners
+      this.slider.addEventListener("input", () => this.onSliderChange());
+      this.playBtn.addEventListener("click", () => this.togglePlay());
 
-    // Speed buttons
-    document.querySelectorAll(".speed-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        document
-          .querySelectorAll(".speed-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        this.speed = parseInt(btn.dataset.speed);
+      // Speed buttons
+      document.querySelectorAll(".speed-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          document
+            .querySelectorAll(".speed-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          this.speed = parseInt(btn.dataset.speed);
 
-        // Update leaderboard animation speed
-        if (window.Leaderboard) {
-          Leaderboard.setAnimationSpeed(this.speed);
-        }
+          // Update leaderboard animation speed
+          if (window.Leaderboard) {
+            Leaderboard.setAnimationSpeed(this.speed);
+          }
 
-        // Restart interval if playing
-        if (this.isPlaying) {
-          this.stopPlay();
-          this.startPlay();
-        }
+          // Restart interval if playing
+          if (this.isPlaying) {
+            this.stopPlay();
+            this.startPlay();
+          }
+        });
       });
-    });
 
-    // Keyboard navigation
-    document.addEventListener("keydown", (e) => this.handleKeydown(e));
+      // Keyboard navigation (use arrow function to preserve 'this' binding)
+      this.keydownHandler = (e) => this.handleKeydown(e);
+      document.addEventListener("keydown", this.keydownHandler);
+
+      this.initialized = true;
+    }
 
     // Initial render
     this.updateTimeDisplay();

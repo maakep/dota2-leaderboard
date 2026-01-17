@@ -2,7 +2,14 @@
 
 /**
  * Extract leaderboard history from git commits
- * Outputs a consolidated history.json file for the web app
+ *
+ * Outputs a history JSON file for each region to web/data/:
+ *   - history-americas.json
+ *   - history-europe.json
+ *   - history-sea.json
+ *   - history-china.json
+ *
+ * These files are loaded by the web app based on the selected region.
  */
 
 const { execSync } = require("child_process");
@@ -13,8 +20,13 @@ const path = require("path");
 const CONFIG = {
   MAX_DAYS: 140, // How many days of history to include
   MAX_SNAPSHOTS: 3360, // Maximum snapshots (140 days * 24 hours)
-  LEADERBOARD_FILE: "leaderboard/europe.json",
-  OUTPUT_PATH: "web/data/history.json",
+  REGIONS: [
+    { id: "europe", file: "leaderboard/europe.json" },
+    { id: "americas", file: "leaderboard/americas.json" },
+    { id: "sea", file: "leaderboard/sea.json" },
+    { id: "china", file: "leaderboard/china.json" },
+  ],
+  OUTPUT_DIR: "web/data",
 };
 
 /**
@@ -34,16 +46,16 @@ function git(command) {
 }
 
 /**
- * Get all commits that modified the leaderboard file
+ * Get all commits that modified a leaderboard file
  */
-function getLeaderboardCommits() {
+function getLeaderboardCommits(leaderboardFile) {
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - CONFIG.MAX_DAYS);
   const since = cutoffDate.toISOString().split("T")[0];
 
   // Get commits with hash, date, and message
   const log = git(
-    `log --since="${since}" --format="%H|%aI|%s" -- "${CONFIG.LEADERBOARD_FILE}"`
+    `log --since="${since}" --format="%H|%aI|%s" -- "${leaderboardFile}"`
   );
 
   if (!log) return [];
@@ -56,7 +68,7 @@ function getLeaderboardCommits() {
       const [hash, date, ...messageParts] = line.split("|");
       const message = messageParts.join("|");
 
-      // Try to parse timestamp from commit message (format: "update Europe leaderboard data - 2026-01-16 11:31 UTC")
+      // Try to parse timestamp from commit message (format: "update leaderboard data - 2026-01-16 11:31 UTC")
       let timestamp = date;
       const match = message.match(/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})\s*UTC/);
       if (match) {
@@ -76,8 +88,8 @@ function getLeaderboardCommits() {
 /**
  * Get the leaderboard content at a specific commit
  */
-function getLeaderboardAtCommit(commitHash) {
-  const content = git(`show ${commitHash}:"${CONFIG.LEADERBOARD_FILE}"`);
+function getLeaderboardAtCommit(commitHash, leaderboardFile) {
+  const content = git(`show ${commitHash}:"${leaderboardFile}"`);
   if (!content) return null;
 
   try {
@@ -142,16 +154,34 @@ function sampleCommits(commits) {
  * Main extraction function
  */
 async function extractHistory() {
-  console.log("🔍 Finding leaderboard commits...");
+  // Ensure output directory exists
+  if (!fs.existsSync(CONFIG.OUTPUT_DIR)) {
+    fs.mkdirSync(CONFIG.OUTPUT_DIR, { recursive: true });
+  }
 
-  let commits = getLeaderboardCommits();
+  // Process each region
+  for (const region of CONFIG.REGIONS) {
+    console.log(`\n🌍 Processing ${region.id.toUpperCase()} region...`);
+    await extractRegionHistory(region);
+  }
+
+  console.log("\n✅ All regions processed!");
+}
+
+/**
+ * Extract history for a single region
+ */
+async function extractRegionHistory(region) {
+  console.log(`🔍 Finding ${region.id} leaderboard commits...`);
+
+  let commits = getLeaderboardCommits(region.file);
   console.log(
     `Found ${commits.length} commits in the last ${CONFIG.MAX_DAYS} days`
   );
 
   if (commits.length === 0) {
-    console.error("No commits found!");
-    process.exit(1);
+    console.warn(`⚠️ No commits found for ${region.id}, skipping...`);
+    return;
   }
 
   // Sample if too many commits
@@ -164,7 +194,7 @@ async function extractHistory() {
 
   // Process commits from oldest to newest
   for (const commit of commits.reverse()) {
-    const players = getLeaderboardAtCommit(commit.hash);
+    const players = getLeaderboardAtCommit(commit.hash, region.file);
 
     if (players) {
       snapshots.push({
@@ -180,10 +210,18 @@ async function extractHistory() {
     }
   }
 
-  console.log(`✅ Extracted ${snapshots.length} valid snapshots`);
+  console.log(
+    `✅ Extracted ${snapshots.length} valid snapshots for ${region.id}`
+  );
+
+  if (snapshots.length === 0) {
+    console.warn(`⚠️ No valid snapshots for ${region.id}, skipping...`);
+    return;
+  }
 
   // Build output
   const output = {
+    region: region.id,
     snapshots,
     meta: {
       generatedAt: new Date().toISOString(),
@@ -195,17 +233,12 @@ async function extractHistory() {
     },
   };
 
-  // Ensure output directory exists
-  const outputDir = path.dirname(CONFIG.OUTPUT_PATH);
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
-
   // Write output
-  fs.writeFileSync(CONFIG.OUTPUT_PATH, JSON.stringify(output));
+  const outputPath = path.join(CONFIG.OUTPUT_DIR, `history-${region.id}.json`);
+  fs.writeFileSync(outputPath, JSON.stringify(output));
 
-  const fileSizeKB = (fs.statSync(CONFIG.OUTPUT_PATH).size / 1024).toFixed(1);
-  console.log(`💾 Written to ${CONFIG.OUTPUT_PATH} (${fileSizeKB} KB)`);
+  const fileSizeKB = (fs.statSync(outputPath).size / 1024).toFixed(1);
+  console.log(`💾 Written to ${outputPath} (${fileSizeKB} KB)`);
 }
 
 // Run
