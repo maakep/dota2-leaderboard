@@ -169,6 +169,24 @@ const Timeline = {
     this.playBtn.textContent = "⏸";
     this.playBtn.classList.add("playing");
 
+    // Scroll leaderboard into view if not sufficiently visible
+    // Account for fixed timeline (~100px) plus some buffer
+    const leaderboard = document.getElementById("leaderboard");
+    if (leaderboard) {
+      const rect = leaderboard.getBoundingClientRect();
+      const buffer = 250; // Pixels of leaderboard that should be visible
+      const timelineHeight = 100; // Approximate height of fixed timeline
+      const visibleHeight = window.innerHeight - timelineHeight;
+      const isVisible =
+        rect.top < visibleHeight - buffer && rect.bottom > buffer;
+      if (!isVisible) {
+        // Scroll with offset to keep header visible
+        const headerOffset = 80;
+        const elementPosition = leaderboard.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: elementPosition - headerOffset, behavior: "smooth" });
+      }
+    }
+
     const intervalMs = 1000 / this.speed;
 
     // If at the end, start from beginning
