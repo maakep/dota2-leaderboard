@@ -36,7 +36,7 @@ const App = {
       // Load saved scope preferences
       const savedWinnersScope = localStorage.getItem("winnersScope") || "20";
       const savedLosersScope = localStorage.getItem("losersScope") || "20";
-      const savedTimeScope = localStorage.getItem("timeScope") || "1";
+      const savedTimeScope = localStorage.getItem("timeScope") || "7";
 
       // Set dropdown values from saved preferences
       document.getElementById("winners-scope").value = savedWinnersScope;
@@ -48,7 +48,7 @@ const App = {
       this.renderStats(
         parseInt(savedWinnersScope),
         parseInt(savedLosersScope),
-        parseInt(savedTimeScope)
+        parseInt(savedTimeScope),
       );
       this.renderInitialLeaderboard();
       this.setupScopeFilters();
@@ -159,10 +159,10 @@ const App = {
 
       // Re-render everything
       const winnersScope = parseInt(
-        document.getElementById("winners-scope").value
+        document.getElementById("winners-scope").value,
       );
       const losersScope = parseInt(
-        document.getElementById("losers-scope").value
+        document.getElementById("losers-scope").value,
       );
       const timeScope = parseInt(document.getElementById("time-scope").value);
 
@@ -196,7 +196,7 @@ const App = {
 
     // Filter out empty snapshots (extraction script now crops to 500)
     this.data.snapshots = this.data.snapshots.filter(
-      (snapshot) => snapshot.players.length > 0
+      (snapshot) => snapshot.players.length > 0,
     );
 
     if (this.data.snapshots.length === 0) {
@@ -207,7 +207,7 @@ const App = {
     console.log(
       `Date range: ${this.data.snapshots[0].timestamp} to ${
         this.data.snapshots[this.data.snapshots.length - 1].timestamp
-      }`
+      }`,
     );
 
     // Build player history for stats
@@ -224,10 +224,10 @@ const App = {
     // Set up filter change callback to re-render winners/losers
     Leaderboard.onFilterChange = () => {
       const winnersScope = parseInt(
-        document.getElementById("winners-scope").value
+        document.getElementById("winners-scope").value,
       );
       const losersScope = parseInt(
-        document.getElementById("losers-scope").value
+        document.getElementById("losers-scope").value,
       );
       const timeScope = parseInt(document.getElementById("time-scope").value);
       this.renderStats(winnersScope, losersScope, timeScope);
@@ -254,14 +254,14 @@ const App = {
       prosOnly ? 50 : 5, // Fetch more if filtering
       winnersScope,
       timeDays,
-      this.data.snapshots
+      this.data.snapshots,
     );
     let losers = Stats.getLosers(
       this.playerHistory,
       prosOnly ? 50 : 5, // Fetch more if filtering
       losersScope,
       timeDays,
-      this.data.snapshots
+      this.data.snapshots,
     );
 
     // Filter to pros only if enabled
@@ -285,14 +285,14 @@ const App = {
           ${
             w.team_tag
               ? `<span class="player-team">${this.escapeHtml(
-                  w.team_tag
+                  w.team_tag,
                 )}.</span>`
               : ""
           }<span class="player-name">${this.escapeHtml(w.name)}</span>
           ${
             w.country
               ? `<img class="player-flag" src="${Stats.getFlagUrl(
-                  w.country
+                  w.country,
                 )}" alt="${
                   w.country
                 }" title="${w.country.toUpperCase()}" onerror="this.style.display='none'">`
@@ -303,7 +303,7 @@ const App = {
           w.lastRank
         })</span>
       </li>
-    `
+    `,
       )
       .join("");
 
@@ -326,14 +326,14 @@ const App = {
           ${
             l.team_tag
               ? `<span class="player-team">${this.escapeHtml(
-                  l.team_tag
+                  l.team_tag,
                 )}.</span>`
               : ""
           }<span class="player-name">${this.escapeHtml(l.name)}</span>
           ${
             l.country
               ? `<img class="player-flag" src="${Stats.getFlagUrl(
-                  l.country
+                  l.country,
                 )}" alt="${
                   l.country
                 }" title="${l.country.toUpperCase()}" onerror="this.style.display='none'">`
@@ -344,7 +344,7 @@ const App = {
           l.lastRank
         })</span>
       </li>
-    `
+    `,
       )
       .join("");
 
@@ -408,7 +408,7 @@ const App = {
 
         return `
           <div class="team-change-item" data-player-id="${this.escapeAttr(
-            c.id
+            c.id,
           )}">
             ${flagHtml}
             <span class="player-name">${this.escapeHtml(c.name)}</span>
