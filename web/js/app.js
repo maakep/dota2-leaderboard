@@ -54,6 +54,7 @@ const App = {
       this.setupScopeFilters();
       this.setupExpandToggle();
       this.setupTeamChangesToggle();
+      this.setupAboutModal();
 
       // Hide loading, show content
       document.getElementById("loading").classList.add("hidden");
@@ -437,6 +438,42 @@ const App = {
 
     toggleBtn.addEventListener("click", () => {
       section.classList.toggle("collapsed");
+    });
+  },
+
+  /**
+   * Setup About modal
+   */
+  setupAboutModal() {
+    const modal = document.getElementById("about-modal");
+    const openBtn = document.getElementById("about-btn");
+    const closeBtn = document.getElementById("about-modal-close");
+
+    const showModal = () => {
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    };
+
+    const hideModal = () => {
+      modal.classList.add("hidden");
+      document.body.style.overflow = "";
+    };
+
+    openBtn.addEventListener("click", showModal);
+    closeBtn.addEventListener("click", hideModal);
+
+    // Click outside to close
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        hideModal();
+      }
+    });
+
+    // ESC key to close
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+        hideModal();
+      }
     });
   },
 

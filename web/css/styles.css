@@ -47,15 +47,49 @@ body {
 
 /* Header */
 .header {
-  text-align: center;
-  padding: 10px 0 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
   flex-shrink: 0;
+  gap: 20px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-logo {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
 }
 
 .header h1 {
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  margin-bottom: 3px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.header-about-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.header-about-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
 }
 
 .subtitle {
@@ -66,9 +100,7 @@ body {
 /* Region Selector Pills */
 .region-selector {
   display: flex;
-  justify-content: center;
   gap: 8px;
-  margin-top: 8px;
 }
 
 .region-pill {
@@ -898,6 +930,35 @@ body {
   margin-left: auto;
 }
 
+/* About Modal */
+.about-modal-content {
+  max-width: 500px;
+}
+
+.about-modal-body h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.about-modal-body p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 25px;
+}
+
+.support-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+}
+
+.support-section h3 {
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  color: var(--text-primary);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -933,12 +994,34 @@ body {
     overflow: visible;
   }
 
+  .header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .header-left {
+    justify-content: center;
+  }
+
+  .header-logo {
+    width: 28px;
+    height: 28px;
+  }
+
   .header h1 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .header-nav {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .region-selector {
     flex-wrap: wrap;
+    justify-content: center;
     gap: 6px;
   }
 

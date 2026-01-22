@@ -13,7 +13,11 @@
   <div class="app">
     <!-- Header -->
     <header class="header" id="app-header">
-      <h1>Dota 2 Leaderboard Tracker</h1>
+      <div class="header-left">
+        <img src="favicon.ico" alt="Logo" class="header-logo">
+        <h1>Dota 2 Leaderboard Tracker</h1>
+        <button class="header-about-btn" id="about-btn">About Me</button>
+      </div>
       <div class="region-selector" id="region-selector">
         <button class="region-pill" data-region="americas">Americas</button>
         <button class="region-pill" data-region="europe">Europe</button>
@@ -132,6 +136,30 @@
         </div>
       </section>
     </main>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal hidden">
+      <div class="modal-content about-modal-content">
+        <button class="modal-close" id="about-modal-close">&times;</button>
+        <div class="about-modal-body">
+          <h2>About me</h2>
+          
+          <div class="support-section">
+            <p>
+              You may know me from such classics as "Dota 2 Silent Stream until patch drops", "Dota 2 winrate increaser (hoho-haha)", Super Smash Bros chrome extensions, to name a few. Maybe you've seen me in your pubs, or perhaps you're one of the 500k+ people I've reached on StackOverflow helping people with their game development questions. <br />
+              Regardless, I'm a passionate developer and lifelong gamer who has loved Dota since I started playing it about 18 years ago. <br /><br />
+
+              I love making things for this community & game, and this project is one of those things. <br />
+
+              If you appreciate the work, be a life-changer and consider supporting me via the link below. <br /><br />
+
+              Every bit helps me dedicate more time to projects like this one, and to give back to you & the community!
+            </p>
+            <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="maakep" data-color="#23a300" data-emoji="🐸"  data-font="Cookie" data-text="Make my day" data-outline-color="#ffffff" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Player Modal -->
     <div id="player-modal" class="modal hidden">
