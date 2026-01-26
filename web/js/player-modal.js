@@ -7,6 +7,7 @@ const PlayerModal = {
   chart: null,
   playerHistory: null,
   snapshots: null,
+  currentPlayerId: null,
 
   /**
    * Initialize the modal
@@ -19,21 +20,58 @@ const PlayerModal = {
     // Close button
     document
       .getElementById("modal-close")
-      .addEventListener("click", () => this.hide());
+      .addEventListener("click", () => this.hide(true));
+
+    // Favorite button
+    const favoriteBtn = document.getElementById("modal-favorite-btn");
+    if (favoriteBtn) {
+      favoriteBtn.addEventListener("click", () => this.toggleFavorite());
+    }
 
     // Click outside to close
     this.modal.addEventListener("click", (e) => {
       if (e.target === this.modal) {
-        this.hide();
+        this.hide(true);
       }
     });
 
     // ESC key to close
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !this.modal.classList.contains("hidden")) {
-        this.hide();
+        this.hide(true);
       }
     });
+
+    // Handle browser back button
+    window.addEventListener("popstate", (e) => {
+      if (
+        !this.modal.classList.contains("hidden") &&
+        (!e.state || !e.state.playerModal)
+      ) {
+        this.hide(false);
+      }
+    });
+  },
+
+  /**
+   * Toggle favorite status for current player
+   */
+  toggleFavorite() {
+    if (!this.currentPlayerId) return;
+
+    const isNowFavorite = Favorites.toggle(this.currentPlayerId);
+    this.updateFavoriteButton(isNowFavorite);
+  },
+
+  /**
+   * Update the favorite button state
+   */
+  updateFavoriteButton(isFavorite) {
+    const btn = document.getElementById("modal-favorite-btn");
+    if (btn) {
+      btn.classList.toggle("active", isFavorite);
+      btn.title = isFavorite ? "Remove from favorites" : "Add to favorites";
+    }
   },
 
   /**
@@ -46,6 +84,15 @@ const PlayerModal = {
       return;
     }
 
+    // Store current player ID for favorite toggle
+    this.currentPlayerId = playerId;
+
+    // Update favorite button state
+    this.updateFavoriteButton(Favorites.isFavorite(playerId));
+
+    // Push history state so back button closes modal
+    history.pushState({ playerModal: true, playerId }, "");
+
     // Update modal content with team prefix and flag
     const nameEl = document.getElementById("modal-player-name");
     const teamEl = document.getElementById("modal-player-team");
@@ -54,7 +101,7 @@ const PlayerModal = {
     // Build name with team prefix (Team.Name format)
     const teamPrefix = stats.team_tag
       ? `<span class="modal-team-prefix">${this.escapeHtml(
-          stats.team_tag
+          stats.team_tag,
         )}.</span>`
       : "";
     const flagHtml = flagUrl
@@ -66,19 +113,16 @@ const PlayerModal = {
       : "";
 
     nameEl.innerHTML = `${teamPrefix}${this.escapeHtml(
-      stats.name
+      stats.name,
     )} ${flagHtml}`;
     teamEl.textContent = ""; // Clear the old team display
 
-    document.getElementById(
-      "modal-current-rank"
-    ).textContent = `#${stats.currentRank}`;
-    document.getElementById(
-      "modal-best-rank"
-    ).textContent = `#${stats.bestRank}`;
-    document.getElementById(
-      "modal-worst-rank"
-    ).textContent = `#${stats.worstRank}`;
+    document.getElementById("modal-current-rank").textContent =
+      `#${stats.currentRank}`;
+    document.getElementById("modal-best-rank").textContent =
+      `#${stats.bestRank}`;
+    document.getElementById("modal-worst-rank").textContent =
+      `#${stats.worstRank}`;
 
     // Total change with color
     const totalChangeEl = document.getElementById("modal-total-change");
@@ -172,10 +216,18 @@ const PlayerModal = {
 
   /**
    * Hide the modal
+   * @param {boolean} updateHistory - Whether to go back in history
    */
-  hide() {
+  hide(updateHistory = false) {
+    if (this.modal.classList.contains("hidden")) return;
+
     this.modal.classList.add("hidden");
     document.body.style.overflow = "";
+
+    // Go back in history if closed by user action (not by popstate)
+    if (updateHistory && history.state && history.state.playerModal) {
+      history.back();
+    }
 
     // Destroy chart to free memory
     if (this.chart) {

@@ -6,6 +6,7 @@
   --accent: #e94560;
   --positive: #00ff88;
   --negative: #ff4757;
+  --favorite: #ffd700;
   --text-primary: #eaeaea;
   --text-secondary: #a0a0a0;
   --text-muted: #666;
@@ -269,6 +270,59 @@ body {
   color: var(--negative);
 }
 
+/* Change arrows in stats lists (like leaderboard style) */
+.stats-list .change {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.stats-list .change.up {
+  color: var(--positive);
+}
+
+.stats-list .change.down {
+  color: var(--negative);
+}
+
+.stats-list .change.same {
+  color: var(--text-muted);
+}
+
+/* Favorite changes display (Down | Up | Net) */
+.favorite-changes {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.favorite-changes .change {
+  white-space: nowrap;
+}
+
+.favorite-changes .change.net {
+  padding-left: 8px;
+  border-left: 1px solid var(--border-color);
+  min-width: 32px;
+  text-align: right;
+}
+
+.favorite-changes .change.small {
+  font-size: 10px;
+  opacity: 0.8;
+  min-width: 28px;
+  text-align: right;
+}
+
+.favorite-changes .rank-transition {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-left: 6px;
+  min-width: 45px;
+  text-align: right;
+}
+
 .general-stats {
   display: flex;
   flex-direction: column;
@@ -295,7 +349,6 @@ body {
   border-radius: 12px;
   padding: 15px 20px;
   border: 1px solid var(--border-color);
-  margin-bottom: 15px;
   flex-shrink: 0;
 }
 
@@ -349,6 +402,22 @@ body {
 .team-changes-section.collapsed .team-changes-list {
   max-height: 0 !important;
   opacity: 0;
+  margin-bottom: 0;
+}
+
+/* Hide collapsed team changes completely on desktop */
+@media (min-width: 769px) {
+  .team-changes-section.collapsed {
+    display: none;
+  }
+}
+
+/* Standalone team changes section (when not in row container) */
+section.team-changes-section {
+  margin-bottom: 15px;
+}
+
+.favorites-team-row .team-changes-section {
   margin-bottom: 0;
 }
 
@@ -633,14 +702,14 @@ body {
 /* Compact mode - hide header and stats */
 .header,
 .stats-section,
-.team-changes-section {
+.favorites-team-row {
   transition: opacity 0.3s ease, max-height 0.3s ease, margin 0.3s ease, padding 0.3s ease;
   overflow: hidden;
 }
 
 .app.compact .header,
 .app.compact .stats-section,
-.app.compact .team-changes-section {
+.app.compact .favorites-team-row {
   opacity: 0;
   max-height: 0;
   margin: 0;
@@ -656,7 +725,7 @@ body {
   max-height: 400px;
 }
 
-.team-changes-section {
+.favorites-team-row {
   max-height: 2000px; /* Large value to allow many items, will animate to 0 in compact mode */
 }
 
@@ -821,9 +890,131 @@ body {
   margin-bottom: 25px;
 }
 
+.modal-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .modal-header h2 {
   font-size: 1.8rem;
   margin-bottom: 5px;
+}
+
+/* Favorite Button in Modal */
+.favorite-btn {
+  background: transparent;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.favorite-btn .star {
+  font-size: 1.4rem;
+  color: var(--text-muted);
+  transition: all 0.2s ease;
+  line-height: 1;
+  margin-top: -2px;
+}
+
+.favorite-btn:hover {
+  border-color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.favorite-btn:hover .star {
+  color: var(--text-secondary);
+}
+
+.favorite-btn.active:hover {
+  border-color: var(--favorite);
+  background: rgba(255, 215, 0, 0.25);
+}
+
+.favorite-btn.active:hover .star {
+  color: var(--favorite);
+}
+
+.favorite-btn.active {
+  border-color: var(--favorite);
+  background: rgba(255, 215, 0, 0.15);
+}
+
+.favorite-btn.active .star {
+  color: var(--favorite);
+}
+
+/* Favorite Stars (inline in lists) */
+.favorite-star {
+  color: var(--favorite);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.favorite-star.small {
+  font-size: 0.9rem;
+  margin-right: 4px;
+}
+
+.favorite-star.large {
+  font-size: 1.3rem;
+}
+
+.favorite-star:not(.active) {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.favorite-star.active {
+  color: var(--favorite);
+  opacity: 1;
+}
+
+.favorite-star.display-only {
+  cursor: default;
+}
+
+/* Favorites Card */
+.favorites-card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+/* Favorites and Team Changes row layout */
+.favorites-team-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.favorites-team-row:has(.favorites-card:not(.hidden)):has(.team-changes-section:not(.hidden):not(.collapsed)) {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Fallback for browsers without :has() support - use JS to add .has-both class */
+.favorites-team-row.has-both {
+  grid-template-columns: 1fr 1fr;
+}
+
+.favorites-team-row .favorites-card {
+  margin-bottom: 0;
+}
+
+.favorites-team-row .team-changes-section {
+  margin-bottom: 0;
+}
+
+.favorites-card h2 span:first-child {
+  color: var(--favorite);
 }
 
 .modal-team {
@@ -833,14 +1024,14 @@ body {
 
 .modal-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   gap: 15px;
   margin-bottom: 30px;
 }
 
 .modal-stat {
   background: var(--bg-tertiary);
-  padding: 15px;
+  padding: 12px;
   border-radius: 10px;
   text-align: center;
 }
@@ -999,9 +1190,11 @@ body {
     gap: 12px;
     align-items: stretch;
     margin-bottom: 10px;
+    max-height: 200px;
   }
 
   .header-left {
+    flex-wrap: wrap;
     justify-content: center;
   }
 
@@ -1012,6 +1205,16 @@ body {
 
   .header h1 {
     font-size: 1.2rem;
+  }
+
+  /* Hide favorite stars in tracked players on mobile */
+  .favorites-card .favorite-star {
+    display: none;
+  }
+
+  /* Stack favorites and team changes on mobile */
+  .favorites-team-row {
+    grid-template-columns: 1fr !important;
   }
 
   .header-nav {

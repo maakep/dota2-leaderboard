@@ -33,7 +33,7 @@ const Leaderboard = {
     const { flash } = this.getAnimationDurations();
     document.documentElement.style.setProperty(
       "--flash-duration",
-      `${flash}ms`
+      `${flash}ms`,
     );
   },
 
@@ -246,11 +246,16 @@ const Leaderboard = {
         }" onerror="this.style.display='none'">`
       : "";
 
+    // Favorite star
+    const favoriteHtml = Favorites.isFavorite(playerId)
+      ? '<span class="favorite-star small active display-only">★</span>'
+      : "";
+
     row.innerHTML = `
       <span class="rank ${rankClass}">${player.rank}</span>
       <span class="change ${change.class}">${change.text}</span>
       <span class="team">${player.team_tag || ""}</span>
-      <span class="name">${this.escapeHtml(player.name)}</span>
+      <span class="name">${favoriteHtml}${this.escapeHtml(player.name)}</span>
       <span class="flag">${flagHtml}</span>
       <span class="chevron">›</span>
     `;

@@ -87,16 +87,35 @@
         </div>
       </section>
 
-      <!-- Team Changes -->
-      <section id="team-changes-section" class="team-changes-section hidden">
-        <h3 class="team-changes-header">
-          <span>🔄 Team Changes <span id="team-changes-count"></span></span>
-          <button id="team-changes-toggle" class="team-changes-toggle hidden" aria-label="Toggle team changes">
-            <span class="chevron">▼</span>
-          </button>
-        </h3>
-        <div id="team-changes-list" class="team-changes-list"></div>
-      </section>
+      <!-- Favorites and Team Changes Row -->
+      <div class="favorites-team-row">
+        <!-- Favorites Tracking -->
+        <section id="favorites-section" class="stats-card favorites-card hidden">
+          <h2>
+            <span>⭐ Tracked Players</span>
+            <div class="scope-selects">
+              <select id="favorites-time-scope" class="scope-select">
+                <option value="1">24 Hours</option>
+                <option value="7" selected>Last Week</option>
+                <option value="30">Last Month</option>
+                <option value="180">Last 6 Months</option>
+              </select>
+            </div>
+          </h2>
+          <ul id="favorites-list" class="stats-list"></ul>
+        </section>
+
+        <!-- Team Changes -->
+        <section id="team-changes-section" class="team-changes-section hidden">
+          <h3 class="team-changes-header">
+            <span>🔄 Team Changes <span id="team-changes-count"></span></span>
+            <button id="team-changes-toggle" class="team-changes-toggle hidden" aria-label="Toggle team changes">
+              <span class="chevron">▼</span>
+            </button>
+          </h3>
+          <div id="team-changes-list" class="team-changes-list"></div>
+        </section>
+      </div>
 
       <!-- Leaderboard -->
       <section class="leaderboard-section">
@@ -166,7 +185,12 @@
       <div class="modal-content">
         <button class="modal-close" id="modal-close">&times;</button>
         <div class="modal-header">
-          <h2 id="modal-player-name"></h2>
+          <div class="modal-title-row">
+            <button id="modal-favorite-btn" class="favorite-btn" title="Add to favorites">
+              <span class="star">★</span>
+            </button>
+            <h2 id="modal-player-name"></h2>
+          </div>
           <span id="modal-player-team" class="modal-team"></span>
         </div>
         <div class="modal-stats">
@@ -199,6 +223,7 @@
   </div>
 
   <!-- Scripts -->
+  <script src="js/favorites.js"></script>
   <script src="js/stats.js"></script>
   <script src="js/leaderboard.js"></script>
   <script src="js/timeline.js"></script>

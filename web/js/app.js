@@ -24,6 +24,9 @@ const App = {
       // Determine initial region from URL hash or localStorage
       this.currentRegion = this.getInitialRegion();
 
+      // Initialize favorites
+      Favorites.init();
+
       // Setup region selector
       this.setupRegionSelector();
 
@@ -43,6 +46,7 @@ const App = {
       document.getElementById("losers-scope").value = savedLosersScope;
       document.getElementById("time-scope").value = savedTimeScope;
       document.getElementById("time-scope-losers").value = savedTimeScope;
+      document.getElementById("favorites-time-scope").value = savedTimeScope;
 
       // Render initial state with saved scopes
       this.renderStats(
@@ -51,10 +55,23 @@ const App = {
         parseInt(savedTimeScope),
       );
       this.renderInitialLeaderboard();
+      this.renderFavorites();
       this.setupScopeFilters();
       this.setupExpandToggle();
       this.setupTeamChangesToggle();
       this.setupAboutModal();
+
+      // Re-render favorites when they change
+      Favorites.onChange(() => {
+        this.renderFavorites();
+        this.renderStats(
+          parseInt(document.getElementById("winners-scope").value),
+          parseInt(document.getElementById("losers-scope").value),
+          parseInt(document.getElementById("time-scope").value),
+        );
+        // Re-render leaderboard to update stars
+        this.renderInitialLeaderboard();
+      });
 
       // Hide loading, show content
       document.getElementById("loading").classList.add("hidden");
@@ -169,6 +186,7 @@ const App = {
 
       this.renderStats(winnersScope, losersScope, timeScope);
       this.renderInitialLeaderboard();
+      this.renderFavorites();
 
       // Hide loading, show content
       document.getElementById("loading").classList.add("hidden");
@@ -283,6 +301,7 @@ const App = {
       <li data-player-id="${this.escapeAttr(w.id)}">
         <span>
           <span class="player-rank-num">${i + 1}.</span>
+          ${Favorites.isFavorite(w.id) ? '<span class="favorite-star small active display-only">★</span>' : ""}
           ${
             w.team_tag
               ? `<span class="player-team">${this.escapeHtml(
@@ -324,6 +343,7 @@ const App = {
       <li data-player-id="${this.escapeAttr(l.id)}">
         <span>
           <span class="player-rank-num">${i + 1}.</span>
+          ${Favorites.isFavorite(l.id) ? '<span class="favorite-star small active display-only">★</span>' : ""}
           ${
             l.team_tag
               ? `<span class="player-team">${this.escapeHtml(
@@ -362,6 +382,167 @@ const App = {
   },
 
   /**
+   * Update the favorites-team-row layout class
+   */
+  updateFavoritesTeamRowLayout() {
+    const row = document.querySelector(".favorites-team-row");
+    const favoritesSection = document.getElementById("favorites-section");
+    const teamChangesSection = document.getElementById("team-changes-section");
+
+    const favoritesVisible = !favoritesSection.classList.contains("hidden");
+    const teamChangesVisible =
+      !teamChangesSection.classList.contains("hidden") &&
+      !teamChangesSection.classList.contains("collapsed");
+
+    if (favoritesVisible && teamChangesVisible) {
+      row.classList.add("has-both");
+    } else {
+      row.classList.remove("has-both");
+    }
+  },
+
+  /**
+   * Render favorites section
+   */
+  renderFavorites() {
+    const section = document.getElementById("favorites-section");
+    const list = document.getElementById("favorites-list");
+    const timeDays = parseInt(
+      document.getElementById("favorites-time-scope").value,
+    );
+
+    const favoriteIds = Favorites.getAll();
+
+    // Hide section if no favorites
+    if (favoriteIds.length === 0) {
+      section.classList.add("hidden");
+      this.updateFavoritesTeamRowLayout();
+      return;
+    }
+
+    section.classList.remove("hidden");
+    this.updateFavoritesTeamRowLayout();
+
+    // Get player changes for favorites
+    const favoriteChanges = [];
+
+    // Build history for the time period
+    const history = Stats.buildPlayerHistory(this.data.snapshots, timeDays);
+
+    for (const playerId of favoriteIds) {
+      const playerData = history[playerId];
+
+      if (playerData && playerData.ranks.length >= 1) {
+        const firstRank = playerData.ranks[0].rank;
+        const lastRank = playerData.ranks[playerData.ranks.length - 1].rank;
+        const netChange = firstRank - lastRank; // Positive = improved
+
+        // Calculate total up and down movements
+        let totalUp = 0;
+        let totalDown = 0;
+        for (let i = 1; i < playerData.ranks.length; i++) {
+          const prevRank = playerData.ranks[i - 1].rank;
+          const currRank = playerData.ranks[i].rank;
+          const diff = prevRank - currRank; // Positive = went up (improved)
+          if (diff > 0) {
+            totalUp += diff;
+          } else if (diff < 0) {
+            totalDown += Math.abs(diff);
+          }
+        }
+
+        favoriteChanges.push({
+          id: playerId,
+          name: playerData.name,
+          team_tag: playerData.team_tag,
+          country: playerData.country,
+          firstRank,
+          lastRank,
+          netChange,
+          totalUp,
+          totalDown,
+          totalMovement: totalUp + totalDown,
+        });
+      } else {
+        // Player might not have recent history, get latest data
+        const latestHistory = this.playerHistory[playerId];
+        if (latestHistory) {
+          favoriteChanges.push({
+            id: playerId,
+            name: latestHistory.name,
+            team_tag: latestHistory.team_tag,
+            country: latestHistory.country,
+            firstRank:
+              latestHistory.ranks[latestHistory.ranks.length - 1]?.rank || 0,
+            lastRank:
+              latestHistory.ranks[latestHistory.ranks.length - 1]?.rank || 0,
+            netChange: 0,
+            totalUp: 0,
+            totalDown: 0,
+            totalMovement: 0,
+          });
+        }
+      }
+    }
+
+    // Sort by net change (positive first, negative last)
+    favoriteChanges.sort((a, b) => b.netChange - a.netChange);
+
+    list.innerHTML = favoriteChanges
+      .map((f) => {
+        // Build comprehensive change display: Down X | Up Y | Net
+        let changeHtml =
+          '<span class="favorite-changes"><span class="change same">-</span></span>';
+
+        if (f.totalDown > 0 || f.totalUp > 0) {
+          const downPart =
+            f.totalDown > 0
+              ? `<span class="change down small">↓${f.totalDown}</span>`
+              : "";
+          const upPart =
+            f.totalUp > 0
+              ? `<span class="change up small">↑${f.totalUp}</span>`
+              : "";
+
+          let netPart = "";
+          if (f.netChange > 0) {
+            netPart = `<span class="change up net">↑${f.netChange}</span>`;
+          } else if (f.netChange < 0) {
+            netPart = `<span class="change down net">↓${Math.abs(f.netChange)}</span>`;
+          } else if (f.totalDown > 0 || f.totalUp > 0) {
+            netPart = '<span class="change same net">=</span>';
+          }
+
+          const rankTransition = `<span class="rank-transition">(${f.firstRank}→${f.lastRank})</span>`;
+
+          changeHtml = `<span class="favorite-changes">${downPart}${upPart}${netPart}${rankTransition}</span>`;
+        }
+
+        return `
+          <li data-player-id="${this.escapeAttr(f.id)}">
+            <span>
+              <span class="player-rank-num">#${f.lastRank}</span>
+              <span class="favorite-star small active display-only">★</span>
+              ${f.team_tag ? `<span class="player-team">${this.escapeHtml(f.team_tag)}.</span>` : ""}
+              <span class="player-name">${this.escapeHtml(f.name)}</span>
+              ${f.country ? `<img class="player-flag" src="${Stats.getFlagUrl(f.country)}" alt="${f.country}" title="${f.country.toUpperCase()}" onerror="this.style.display='none'">` : ""}
+            </span>
+            ${changeHtml}
+          </li>
+        `;
+      })
+      .join("");
+
+    // Add click handlers
+    list.querySelectorAll("li").forEach((li) => {
+      li.addEventListener("click", (e) => {
+        e.stopPropagation();
+        PlayerModal.show(li.dataset.playerId);
+      });
+    });
+  },
+
+  /**
    * Render team changes section
    */
   renderTeamChanges(timeDays) {
@@ -373,10 +554,12 @@ const App = {
 
     if (changes.length === 0) {
       section.classList.add("hidden");
+      this.updateFavoritesTeamRowLayout();
       return;
     }
 
     section.classList.remove("hidden");
+    this.updateFavoritesTeamRowLayout();
 
     // Show count in header
     countSpan.textContent = `(${changes.length})`;
@@ -438,6 +621,8 @@ const App = {
 
     toggleBtn.addEventListener("click", () => {
       section.classList.toggle("collapsed");
+      // Update row layout since collapsed team changes is hidden on desktop
+      this.updateFavoritesTeamRowLayout();
     });
   },
 
@@ -452,27 +637,46 @@ const App = {
     const showModal = () => {
       modal.classList.remove("hidden");
       document.body.style.overflow = "hidden";
+      // Push history state so back button closes modal
+      history.pushState({ aboutModal: true }, "");
     };
 
-    const hideModal = () => {
+    const hideModal = (updateHistory = false) => {
+      if (modal.classList.contains("hidden")) return;
+
       modal.classList.add("hidden");
       document.body.style.overflow = "";
+
+      // Go back in history if closed by user action (not by popstate)
+      if (updateHistory && history.state && history.state.aboutModal) {
+        history.back();
+      }
     };
 
     openBtn.addEventListener("click", showModal);
-    closeBtn.addEventListener("click", hideModal);
+    closeBtn.addEventListener("click", () => hideModal(true));
 
     // Click outside to close
     modal.addEventListener("click", (e) => {
       if (e.target === modal) {
-        hideModal();
+        hideModal(true);
       }
     });
 
     // ESC key to close
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-        hideModal();
+        hideModal(true);
+      }
+    });
+
+    // Handle browser back button
+    window.addEventListener("popstate", (e) => {
+      if (
+        !modal.classList.contains("hidden") &&
+        (!e.state || !e.state.aboutModal)
+      ) {
+        hideModal(false);
       }
     });
   },
@@ -508,18 +712,34 @@ const App = {
       this.renderStats(scopes.winners, scopes.losers, scopes.time);
     });
 
+    const favoritesTimeSelect = document.getElementById("favorites-time-scope");
+
+    const syncAllTimeSelects = (value) => {
+      timeSelect.value = value;
+      timeSelectLosers.value = value;
+      favoritesTimeSelect.value = value;
+      localStorage.setItem("timeScope", value);
+    };
+
     timeSelect.addEventListener("change", () => {
-      timeSelectLosers.value = timeSelect.value; // Sync losers dropdown
+      syncAllTimeSelects(timeSelect.value);
       const scopes = getScopes();
-      localStorage.setItem("timeScope", timeSelect.value);
       this.renderStats(scopes.winners, scopes.losers, scopes.time);
+      this.renderFavorites();
     });
 
     timeSelectLosers.addEventListener("change", () => {
-      timeSelect.value = timeSelectLosers.value; // Sync winners dropdown
+      syncAllTimeSelects(timeSelectLosers.value);
       const scopes = getScopes();
-      localStorage.setItem("timeScope", timeSelectLosers.value);
       this.renderStats(scopes.winners, scopes.losers, scopes.time);
+      this.renderFavorites();
+    });
+
+    favoritesTimeSelect.addEventListener("change", () => {
+      syncAllTimeSelects(favoritesTimeSelect.value);
+      const scopes = getScopes();
+      this.renderStats(scopes.winners, scopes.losers, scopes.time);
+      this.renderFavorites();
     });
   },
 
