@@ -446,6 +446,26 @@
     gtag('js', new Date());
 
     gtag('config', 'G-X8RP9NY768');
+
+    // Track About Me button click
+    document.getElementById('about-btn')?.addEventListener('click', function() {
+      gtag('event', 'about_me_open', {
+        'event_category': 'engagement',
+        'event_label': 'About Me Button'
+      });
+    });
+
+    // Track Buy Me a Coffee link click (the BMC script creates an anchor)
+    document.addEventListener('click', function(e) {
+      const bmcLink = e.target.closest('a[href*="buymeacoffee.com"]');
+      if (bmcLink) {
+        gtag('event', 'support_click', {
+          'event_category': 'engagement',
+          'event_label': 'Buy Me a Coffee',
+          'transport_type': 'beacon'
+        });
+      }
+    });
   </script>
 </body>
 </html>

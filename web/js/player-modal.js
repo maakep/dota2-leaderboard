@@ -84,6 +84,16 @@ const PlayerModal = {
       return;
     }
 
+    // Track player click in GA
+    if (typeof gtag === "function") {
+      gtag("event", "player_click", {
+        event_category: "engagement",
+        event_label: stats.name,
+        player_id: playerId,
+        player_rank: stats.currentRank,
+      });
+    }
+
     // Store current player ID for favorite toggle
     this.currentPlayerId = playerId;
 

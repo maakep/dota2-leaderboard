@@ -60,13 +60,23 @@ const Favorites = {
    * @returns {boolean} - New favorite status
    */
   toggle(playerId) {
-    if (this.favorites.has(playerId)) {
+    const wasFavorite = this.favorites.has(playerId);
+    if (wasFavorite) {
       this.favorites.delete(playerId);
     } else {
       this.favorites.add(playerId);
     }
     this.saveToStorage();
     this.notifyChange();
+
+    // Track favorite toggle in GA
+    if (typeof gtag === "function") {
+      gtag("event", wasFavorite ? "player_unfavorite" : "player_favorite", {
+        event_category: "engagement",
+        event_label: playerId,
+      });
+    }
+
     return this.favorites.has(playerId);
   },
 
