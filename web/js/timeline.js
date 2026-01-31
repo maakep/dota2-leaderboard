@@ -48,7 +48,7 @@ const Timeline = {
     // Set labels
     this.startLabel.textContent = this.formatDate(snapshots[0].timestamp);
     this.endLabel.textContent = this.formatDate(
-      snapshots[snapshots.length - 1].timestamp
+      snapshots[snapshots.length - 1].timestamp,
     );
 
     // Only add event listeners once
@@ -144,7 +144,7 @@ const Timeline = {
           previousIndex >= 0 ? this.snapshots[previousIndex] : null;
         this.onSnapshotChange(
           this.snapshots[this.currentIndex],
-          previousSnapshot
+          previousSnapshot,
         );
       }
     }
@@ -171,7 +171,7 @@ const Timeline = {
 
     // Scroll leaderboard into view if not sufficiently visible
     // Account for fixed timeline (~100px) plus some buffer
-    const leaderboard = document.getElementById("leaderboard");
+    const leaderboard = document.getElementById("leaderboard-list");
     if (leaderboard) {
       const rect = leaderboard.getBoundingClientRect();
       const buffer = 250; // Pixels of leaderboard that should be visible
@@ -227,7 +227,7 @@ const Timeline = {
         if (this.onSnapshotChange) {
           this.onSnapshotChange(
             this.snapshots[this.currentIndex],
-            this.snapshots[previousIndex]
+            this.snapshots[previousIndex],
           );
         }
       } else {
@@ -258,7 +258,7 @@ const Timeline = {
     const snapshot = this.snapshots[this.currentIndex];
     if (snapshot) {
       this.currentTimeDisplay.textContent = this.formatDateTime(
-        snapshot.timestamp
+        snapshot.timestamp,
       );
     }
   },

@@ -1,0 +1,11 @@
+# Robots.txt for Dota 2 Leaderboard Tracker
+# https://maakep.github.io/dota2-leaderboard/
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://maakep.github.io/dota2-leaderboard/sitemap.xml
+
+# Crawl-delay (optional, be polite to search engines)
+Crawl-delay: 1

@@ -41,7 +41,7 @@ const Leaderboard = {
    * Initialize the leaderboard
    */
   init() {
-    this.container = document.getElementById("leaderboard");
+    this.container = document.getElementById("leaderboard-list");
 
     // Load teams-only preference from localStorage
     this.teamsOnly = localStorage.getItem("teamsOnly") === "true";

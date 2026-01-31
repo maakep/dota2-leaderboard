@@ -3,45 +3,197 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dota 2 Leaderboard Tracker</title>
+  
+  <!-- Primary Meta Tags -->
+  <title>Dota 2 Leaderboard - Live Rankings, Top Players & Pro Teams | All Regions</title>
+  <meta name="title" content="Dota 2 Leaderboard - Live Rankings, Top Players & Pro Teams | All Regions">
+  <meta name="description" content="Track Dota 2 leaderboard rankings in real-time. View top ranked players, MMR changes, pro team rosters & rank history for Americas, Europe, SEA & China regions. Updated daily.">
+  <meta name="keywords" content="dota 2 leaderboard, dota 2 rankings, dota 2 top players, dota 2 mmr leaderboard, dota 2 rank tracker, dota 2 pro players, dota 2 immortal leaderboard, dota leaderboard europe, dota leaderboard americas, dota leaderboard sea, dota leaderboard china, dota 2 top 100, dota 2 top ranks, dota 2 highest mmr, dota 2 rank history, dota 2 team changes">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="author" content="Dota 2 Leaderboard Tracker">
+  <meta name="language" content="English">
+  <meta name="revisit-after" content="1 days">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://maakep.github.io/dota2-leaderboard/">
+  
+  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <meta name="description" content="Track Dota 2 leaderboard & team changes over time across all regions">
+  <link rel="apple-touch-icon" href="favicon.ico">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://maakep.github.io/dota2-leaderboard/">
+  <meta property="og:title" content="Dota 2 Leaderboard - Live Rankings & Top Players">
+  <meta property="og:description" content="Track Dota 2 leaderboard rankings in real-time. View top ranked players, MMR changes, pro team rosters & rank history for all regions.">
+  <meta property="og:image" content="https://maakep.github.io/dota2-leaderboard/og-image.png">
+  <meta property="og:site_name" content="Dota 2 Leaderboard Tracker">
+  <meta property="og:locale" content="en_US">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://maakep.github.io/dota2-leaderboard/">
+  <meta property="twitter:title" content="Dota 2 Leaderboard - Live Rankings & Top Players">
+  <meta property="twitter:description" content="Track Dota 2 leaderboard rankings in real-time. View top ranked players, MMR changes, pro team rosters & rank history for all regions.">
+  <meta property="twitter:image" content="https://maakep.github.io/dota2-leaderboard/og-image.png">
+  
+  <!-- Structured Data - WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Dota 2 Leaderboard Tracker",
+    "alternateName": ["Dota 2 Rankings", "Dota 2 Leaderboard", "Dota Leaderboard"],
+    "url": "https://maakep.github.io/dota2-leaderboard/",
+    "description": "Track Dota 2 leaderboard rankings in real-time across all regions. View top ranked players, MMR changes, and pro team rosters.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://maakep.github.io/dota2-leaderboard/#{search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  
+  <!-- Structured Data - SportsOrganization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Dota 2 Leaderboard Tracker",
+    "applicationCategory": "GameApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "1"
+    },
+    "description": "Free tool to track Dota 2 leaderboard rankings, player statistics, and team changes across Americas, Europe, SEA, and China regions.",
+    "featureList": [
+      "Real-time leaderboard rankings",
+      "Player rank history charts",
+      "Team change tracking",
+      "Multi-region support",
+      "Favorite player tracking",
+      "Historical data visualization"
+    ]
+  }
+  </script>
+  
+  <!-- Structured Data - BreadcrumbList -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://maakep.github.io/dota2-leaderboard/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Europe Leaderboard",
+        "item": "https://maakep.github.io/dota2-leaderboard/#europe"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Americas Leaderboard",
+        "item": "https://maakep.github.io/dota2-leaderboard/#americas"
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": "SEA Leaderboard",
+        "item": "https://maakep.github.io/dota2-leaderboard/#sea"
+      },
+      {
+        "@type": "ListItem",
+        "position": 5,
+        "name": "China Leaderboard",
+        "item": "https://maakep.github.io/dota2-leaderboard/#china"
+      }
+    ]
+  }
+  </script>
+  
+  <!-- Structured Data - FAQPage for rich snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is the Dota 2 Leaderboard?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The Dota 2 Leaderboard shows the top-ranked players in each region (Americas, Europe, SEA, and China) based on their MMR (Matchmaking Rating). Players must be in the Immortal rank bracket to appear on the leaderboard."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How often is the Dota 2 Leaderboard updated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our Dota 2 Leaderboard Tracker updates hourly, tracking rank changes, team movements, and player statistics across all regions."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which regions are supported?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We track all four official Dota 2 leaderboard regions: Americas, Europe, Southeast Asia (SEA), and China."
+        }
+      }
+    ]
+  }
+  </script>
+  
   <link rel="stylesheet" href="css/styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="app">
     <!-- Header -->
-    <header class="header" id="app-header">
+    <header class="header" id="app-header" role="banner">
       <div class="header-left">
-        <img src="favicon.ico" alt="Logo" class="header-logo">
+        <img src="favicon.ico" alt="Dota 2 Leaderboard Logo" class="header-logo" width="32" height="32">
         <h1>Dota 2 Leaderboard Tracker</h1>
-        <button class="header-about-btn" id="about-btn">About Me</button>
+        <button class="header-about-btn" id="about-btn" aria-label="About the developer">About Me</button>
       </div>
-      <div class="region-selector" id="region-selector">
-        <button class="region-pill" data-region="americas">Americas</button>
-        <button class="region-pill" data-region="europe">Europe</button>
-        <button class="region-pill" data-region="sea">SE Asia</button>
-        <button class="region-pill" data-region="china">China</button>
-      </div>
+      <nav class="region-selector" id="region-selector" role="navigation" aria-label="Region selection">
+        <button class="region-pill" data-region="americas" aria-label="View Americas region leaderboard">Americas</button>
+        <button class="region-pill" data-region="europe" aria-label="View Europe region leaderboard">Europe</button>
+        <button class="region-pill" data-region="sea" aria-label="View Southeast Asia region leaderboard">SE Asia</button>
+        <button class="region-pill" data-region="china" aria-label="View China region leaderboard">China</button>
+      </nav>
     </header>
 
     <!-- Loading State -->
-    <div id="loading" class="loading">
-      <div class="spinner"></div>
+    <div id="loading" class="loading" role="status" aria-live="polite">
+      <div class="spinner" aria-hidden="true"></div>
       <p>Loading leaderboard history...</p>
     </div>
 
     <!-- Error State -->
-    <div id="error" class="error hidden">
+    <div id="error" class="error hidden" role="alert">
       <p>⚠️ Failed to load data. Please try again later.</p>
     </div>
 
     <!-- Main Content -->
-    <main id="main-content" class="main-content hidden">
+    <main id="main-content" class="main-content hidden" role="main">
       <!-- Stats Cards -->
-      <section class="stats-section" id="stats-section">
-        <div class="stats-card winners" id="winners-card">
+      <section class="stats-section" id="stats-section" aria-label="Player statistics">
+        <article class="stats-card winners" id="winners-card">
           <h2>
             <span>📈 Biggest Winners</span>
             <div class="scope-selects">
@@ -62,8 +214,8 @@
             </div>
           </h2>
           <ul id="winners-list" class="stats-list"></ul>
-        </div>
-        <div class="stats-card losers" id="losers-card">
+        </article>
+        <article class="stats-card losers" id="losers-card">
           <h2>
             <span>📉 Biggest Losers</span>
             <div class="scope-selects">
@@ -84,7 +236,7 @@
             </div>
           </h2>
           <ul id="losers-list" class="stats-list"></ul>
-        </div>
+        </article>
       </section>
 
       <!-- Favorites and Team Changes Row -->
@@ -118,8 +270,9 @@
       </div>
 
       <!-- Leaderboard -->
-      <section class="leaderboard-section">
-        <div class="leaderboard-header">
+      <section class="leaderboard-section" id="leaderboard" aria-label="Dota 2 player rankings">
+        <h2 class="visually-hidden">Dota 2 Leaderboard Rankings</h2>
+        <div class="leaderboard-header" role="row">
           <span class="col-rank">Rank</span>
           <span class="col-change">Δ</span>
           <span class="col-team">Team</span>
@@ -131,11 +284,11 @@
             <button id="expand-toggle" class="expand-toggle" title="Toggle compact mode">↗</button>
           </div>
         </div>
-        <div id="leaderboard" class="leaderboard"></div>
+        <div id="leaderboard-list" class="leaderboard" role="list" aria-label="Player rankings list"></div>
       </section>
 
       <!-- Timeline -->
-      <section class="timeline-section">
+      <section class="timeline-section" aria-label="Historical timeline controls">
         <div class="timeline-controls">
           <button id="play-btn" class="control-btn" title="Play/Pause">▶</button>
           <div class="speed-controls">
@@ -221,6 +374,62 @@
       </div>
     </div>
   </div>
+
+  <!-- SEO Content Section - Visible for search engines, styled to blend with design -->
+  <aside class="seo-content" aria-label="About Dota 2 Leaderboard">
+    <div class="seo-content-inner">
+      <h2>Dota 2 Leaderboard - Track Top Ranked Players Worldwide</h2>
+      <p>Welcome to the most comprehensive <strong>Dota 2 Leaderboard Tracker</strong> - your ultimate destination for tracking <strong>Dota 2 rankings</strong>, <strong>top players</strong>, and <strong>pro team movements</strong> across all competitive regions.</p>
+      
+      <h3>Real-Time Dota 2 Rankings</h3>
+      <p>Our <strong>Dota 2 leaderboard</strong> provides up-to-date rankings for the <strong>top Immortal players</strong> in every region. Track <strong>MMR leaderboard</strong> changes daily and see who's climbing or falling in the ranks. Whether you're following your favorite pro player or tracking the <strong>highest MMR players</strong> in the world, our tracker has you covered.</p>
+      
+      <h3>All Dota 2 Regions Covered</h3>
+      <ul>
+        <li><strong>Americas Dota 2 Leaderboard</strong> - North and South American top players</li>
+        <li><strong>Europe Dota 2 Leaderboard</strong> - European and CIS region rankings</li>
+        <li><strong>Southeast Asia Dota 2 Leaderboard</strong> - SEA's finest players</li>
+        <li><strong>China Dota 2 Leaderboard</strong> - Chinese professional scene rankings</li>
+      </ul>
+      
+      <h3>Pro Player & Team Tracking</h3>
+      <p>Follow <strong>Dota 2 pro players</strong> and their journey through the ranks. See <strong>team changes</strong>, track when players join or leave organizations, and monitor the competitive scene. Our <strong>Dota 2 team tracker</strong> keeps you informed about roster movements across all major teams.</p>
+      
+      <h3>Historical Rank Data</h3>
+      <p>View <strong>Dota 2 rank history</strong> with our interactive timeline feature. See how players' rankings have changed over time, identify trends, and analyze performance patterns. Track the <strong>biggest winners and losers</strong> in the Dota 2 competitive ladder.</p>
+    </div>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Dota 2 Leaderboard Tracker</h4>
+        <p>Track Dota 2 leaderboard rankings, player stats, and team changes across all regions. Free, updated daily.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Regions</h4>
+        <ul>
+          <li><a href="#" data-region="americas">Americas Leaderboard</a></li>
+          <li><a href="#" data-region="europe">Europe Leaderboard</a></li>
+          <li><a href="#" data-region="sea">SEA Leaderboard</a></li>
+          <li><a href="#" data-region="china">China Leaderboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Features</h4>
+        <ul>
+          <li>Real-time Rankings</li>
+          <li>Player Rank History</li>
+          <li>Team Change Tracking</li>
+          <li>Favorite Players</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Dota 2 Leaderboard Tracker. Dota 2 is a registered trademark of Valve Corporation.</p>
+    </div>
+  </footer>
 
   <!-- Scripts -->
   <script src="js/favorites.js"></script>
