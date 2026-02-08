@@ -2,32 +2,32 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://maakep.github.io/dota2-leaderboard/</loc>
-    <lastmod>2026-01-31</lastmod>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://maakep.github.io/dota2-leaderboard/?region=americas</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://maakep.github.io/dota2-leaderboard/#americas</loc>
+    <lastmod>2026-02-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://maakep.github.io/dota2-leaderboard/#europe</loc>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://maakep.github.io/dota2-leaderboard/?region=europe</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://maakep.github.io/dota2-leaderboard/#sea</loc>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://maakep.github.io/dota2-leaderboard/?region=sea</loc>
-    <lastmod>2026-01-31</lastmod>
+    <loc>https://maakep.github.io/dota2-leaderboard/#china</loc>
+    <lastmod>2026-02-08</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://maakep.github.io/dota2-leaderboard/?region=china</loc>
-    <lastmod>2026-01-31</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
   </url>
 </urlset>
