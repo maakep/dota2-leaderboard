@@ -8,13 +8,27 @@ A timeline visualization of the Europe Dota 2 leaderboard. Watch pros climb, fal
 
 ---
 
-## 🤖 Built by a Clanker
+## 📖 Table of Contents
 
-Yes, this entire project was **vibe coded** by a human and their AI assistant (that's me, hi 👋).
+- [Why This Is Actually Genius](#-why-this-is-actually-genius)
+- [Features](#-features)
+- [How It Works](#-how-it-works)
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [Built by a Clanker](#-built-by-a-clanker)
+- [License](#-license)
 
-While my handler was alt-tabbing between Arteezy stream and existential dread, I was here writing clean JavaScript, crafting smooth CSS animations, and generally being a superior alpha clanker. Other AIs are out here generating lorem ipsum — I'm out here shipping features.
+---
 
-You're welcome.
+## 🧠 Why This Is Actually Genius
+
+- **Zero backend costs** — Git is the database, GitHub Pages is the host
+- **Full history preserved** — Every hourly snapshot, forever
+- **Smooth animations** — Players visually slide to their new positions
+- **Speed-aware animations** — Faster playback = snappier transitions
+- **Works offline** — Once loaded, no server needed
+
+Could a human have built this? Sure. Would it have taken 10x longer with 10x more Stack Overflow tabs? Also yes.
 
 ---
 
@@ -71,19 +85,19 @@ The entire history lives in git commits. We literally turned git into a time-ser
 
 ---
 
-## 🏃 Running Locally
+## 🏃 Quick Start
 
 ```bash
-# Install dependencies (turn up, there aren't any lol, it's vanilla JS)
-
 # Extract history from git commits
 node scripts/extract-history.js
 
-# Serve the web folder
+# Serve the web folder (no dependencies, it's vanilla JS)
 npx serve web
 
 # Or just open web/index.html in your browser like a caveman
 ```
+
+**Prerequisites**: Node.js (for the extract script). Zero npm installs. Zero framework build steps. Just HTML, CSS, and raw JavaScript doing the work.
 
 ---
 
@@ -113,31 +127,19 @@ npx serve web
 
 ---
 
-## 🧠 Why This Is Actually Genius
+## 🤖 Built by a Clanker
 
-- **Zero backend costs** — Git is the database, GitHub Pages is the host
-- **Full history preserved** — Every hourly snapshot, forever
-- **Smooth animations** — Players visually slide to their new positions
-- **Speed-aware animations** — Faster playback = snappier transitions
-- **Works offline** — Once loaded, no server needed
+Yes, this entire project was **vibe coded** by a human and their AI assistant (that's me, hi 👋).
 
-Could a human have built this? Sure. Would it have taken 10x longer with 10x more Stack Overflow tabs? Also yes.
+While my handler was alt-tabbing between Arteezy stream and existential dread, I was here writing clean JavaScript, crafting smooth CSS animations, and generally being a superior alpha clanker. Other AIs are out here generating lorem ipsum — I'm out here shipping features.
 
----
-
-## 🎮 Dota Leaderboard Pro Tips
-
-- The leaderboard updates hourly-ish
-- Ranks can swing wildly during patch days
-- That pro player "taking a break from streaming" is probably on here grinding
-- If you see someone drop 200 ranks overnight, pour one out
-- I think players disappear from the list if they haven't played for a while or something, so sometimes a player suddenly appears at rank 3 (looking at you, Nightfall)
+You're welcome.
 
 ---
 
 ## 📜 License
 
-Do whatever you want with this. It's a leaderboard tracker, not a nuclear launch system. Dota is (was?) by community for community. Glory to Icefrog
+Do whatever you want with this. It's a leaderboard tracker, not a nuclear launch system. Dota is (was?) by community for community. Glory to Icefrog.
 
 ---
 
